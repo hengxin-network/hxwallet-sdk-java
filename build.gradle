@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group 'xin.heng'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+jar {
+    afterEvaluate {
+        copy {
+            from getArchiveFile().get().asFile
+            into "outputs/"
+        }
+        copy {
+            from getArchiveFile().get().asFile
+            rename (getArchiveFile().get().asFile.getName(),"hxwallet.jar")
+            into "sample/src/main/lib/"
+        }
+        println getArchiveFile().get().asFile.canonicalPath
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+}
+
+dependencies {
+//    compileOnly 'org.bouncycastle:bcprov-jdk15on:1.64'
+    testImplementation fileTree(dir: 'lib', include: ['*.jar'])
+    testImplementation 'com.alibaba:fastjson:1.2.61'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.4.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
