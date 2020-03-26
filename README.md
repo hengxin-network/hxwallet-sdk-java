@@ -2,6 +2,9 @@
 
 恒信Java SDK提供了基本的密码学接口封装以及业务接口的封装，
 实例项目在[sample](sample)目录下，SDK项目代码结构如下:
+> Sample是一个独立的Project, 默认IDEA可能会将其导入到SDK主工程中
+> 需要在File>Project Structure>Project Settings>Modules里面将其移除
+> 查看Sample工程我们建议作为单独的Project打开
 
 ```
 /HXUtils                    提供json解析
@@ -24,7 +27,7 @@
 
 ### 接入方法
 
-1. 引入jar包依赖 位置:[hxwallet-1.0.jar](outputs/hxwallet-1.0.jar)
+1. 引入jar包依赖 位置:[hxwallet-1.0.jar](sample/src/main/lib/hxwallet.jar)
 2. 使用钱包，需要注入必要的模块
 - 需要注入的有三个模块，分别是IHXSM2Engine,IHXSM2Signer和IHXSM3Digest
 - 其中IHXSM2Signer和IHXSM3Digest提供了基于BC库的默认注入实现，由于BC库SM2加解密的实现逻辑未使用Java Security标准API，SDK中不提供IHXSM2Engine的默认实现
