@@ -1,12 +1,19 @@
 package xin.heng.sample;
 
 public class SampleUtils {
-    public static String pemKey = "-----BEGIN PRIVATE KEY-----\n" +
+    public static String testPrivateKey = "-----BEGIN PRIVATE KEY-----\n" +
             "MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQghwBKUJ/WL+5S8ICX\n" +
             "q4RD/J+Pb4rN/DCKPyvnZUpQf3KgCgYIKoEcz1UBgi2hRANCAAR4Nmo2Z9H0pnhD\n" +
             "rA1cU1QFY7uzJtU3/wxZvICEUhvcE9I4BMWBZAeYQ9WvtViTU4vx90sPad9YZzSC\n" +
             "0DU4/3W5\n" +
             "-----END PRIVATE KEY-----";
+
+    public static String testPublicKey = "-----BEGIN PUBLIC KEY-----\n" +
+            "    MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEeDZqNmfR9KZ4Q6wNXFNUBWO7sybV\n" +
+            "    N/8MWbyAhFIb3BPSOATFgWQHmEPVr7VYk1OL8fdLD2nfWGc0gtA1OP91uQ==\n" +
+            "    -----END PUBLIC KEY-----";
+
+    public static String sm4TestKeyBase64 = "6fVS2SF3IrI625N2WuYaPQ==";
 
     public static String testAsset = "6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa";
 

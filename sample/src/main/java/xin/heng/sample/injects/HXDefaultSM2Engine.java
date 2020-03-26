@@ -82,7 +82,8 @@ public class HXDefaultSM2Engine implements IHXSM2Engine {
                 factory.injectDefault();
                 keyFactory = factory;
             }
-            keyFactory.generatePrivate(privateKeySpec);
+            PrivateKey key = keyFactory.generatePrivate(privateKeySpec);
+            setPrivateKey(key);
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
