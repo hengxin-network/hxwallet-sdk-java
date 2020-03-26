@@ -89,8 +89,8 @@ public class HXUtils {
                 ",\"iss\":\"" + jwtMaterial.getAddress() + "\"" +
                 ",\"jti\":\"" + UUID.randomUUID() + "\"";
         if (jwtMaterial.isRequestSignature()) {
-            String rawSig = jwtMaterial.getRequestMethod() + jwtMaterial.getUrl();
-            if (jwtMaterial.getBody() != null && !jwtMaterial.getBody().isEmpty()) {
+            String rawSig = jwtMaterial.getRequestMethod().toUpperCase() + jwtMaterial.getUrl();
+            if (jwtMaterial.getRequestMethod().toUpperCase().contentEquals("POST") && jwtMaterial.getBody() != null && !jwtMaterial.getBody().isEmpty()) {
                 rawSig = rawSig + HXUtils.optToJson(jwtMaterial.getBody());
             }
             System.out.println("rawSig: " + rawSig);

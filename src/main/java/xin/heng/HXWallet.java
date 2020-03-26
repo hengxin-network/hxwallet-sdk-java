@@ -123,6 +123,14 @@ public class HXWallet {
         }
     }
 
+    public byte[] encryptBySM2(byte[] rawData,PublicKey publicKey){
+        return sm2Engine.encrypt(rawData, publicKey);
+    }
+
+    public byte[] decryptBySM2(byte[] encryptData){
+        return sm2Engine.decrypt(encryptData);
+    }
+
     public byte[] encryptBySM4(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException {
         return sm4.encrypt(rawData);
     }
