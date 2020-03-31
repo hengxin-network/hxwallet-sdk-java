@@ -15,7 +15,7 @@ public class SM2Test {
         String testData = "this is an another test Data string.";
         Security.addProvider(new BouncyCastleProvider());
         HXWallet.getInstance().initDefaultInjects();
-
+        HXWallet.getInstance().injectSM2Engine(new HXDefaultSM2Engine());
         try {
             String encoded = TestUtil.pemTestKey;
             encoded = encoded.replace("-----BEGIN PRIVATE KEY-----", "");
