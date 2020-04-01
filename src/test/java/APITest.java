@@ -1,5 +1,4 @@
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.HXDefaultHttpClient;
@@ -39,9 +38,13 @@ public class APITest {
         api.injectHttpClient(client);
         api.injectWallet(wallet);
 
+        // postUser
+        HXResponse<HXUserInfoBody> postUsersResponse = api.postUsers(TestUtil.userAddress);
+        TestUtil.printResult(postUsersResponse);
+
         // getInfo
-        HXResponse<HXUserInfoBody> response = api.getInfo(TestUtil.userAddress);
-        TestUtil.printResult(response);
+        HXResponse<HXUserInfoBody> getInfoResponse = api.getInfo(TestUtil.userAddress);
+        TestUtil.printResult(getInfoResponse);
 
         // getSnapshots
         HXResponse<HXSnapshotsBody> snapshotsResponse = api.getSnapshots(TestUtil.userAddress, new HXSnapshotRequest());
@@ -58,7 +61,7 @@ public class APITest {
                 .setMemo(memo)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
-        HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap,null);
+        HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
         TestUtil.printResult(HXResponse);
 
 

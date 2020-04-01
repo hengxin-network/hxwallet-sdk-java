@@ -4,7 +4,6 @@ public class HXUserInfo {
     public String user_id;
     public String created_at;
     public String address;
-    public String keystore;
 
     public String getUser_id() {
         return user_id;
@@ -28,13 +27,5 @@ public class HXUserInfo {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getKeystore() {
-        return keystore;
-    }
-
-    public void setKeystore(String keystore) {
-        this.keystore = keystore;
     }
 }

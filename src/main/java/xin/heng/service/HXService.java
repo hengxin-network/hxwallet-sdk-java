@@ -80,6 +80,30 @@ public class HXService {
         return response;
     }
 
+    public HXResponse<HXUserInfoBody> postUsers(String address) throws SignatureException {
+        HashMap<String, String> headers = new HashMap<>();
+
+        HXJwtBuildMaterial jwtBuildMaterial = new HXJwtBuildMaterial()
+                .setRequestMethod("POST")
+                .setUrl("/users")
+                .setAddress(address)
+                .setExpiredTime(DEFAULT_EXPIRED_TIME);
+
+        String jwtToken = HXUtils.buildJwtString(wallet, jwtBuildMaterial);
+
+        headers.put("Authorization", "Bearer " + jwtToken);
+        headers.put("Content-Type", "application/json;charset=utf-8");
+
+        HXResponse<String> stringHXResponse = httpClient.post("/users", null, headers, null);
+        HXResponse<HXUserInfoBody> response = new HXResponse<>();
+        response.httpCode = stringHXResponse.httpCode;
+        response.originError = stringHXResponse.originError;
+        if (stringHXResponse.responseBody != null && stringHXResponse.responseBody.length() != 0) {
+            response.responseBody = HXUtils.optFromJson(stringHXResponse.responseBody, HXUserInfoBody.class);
+        }
+        return response;
+    }
+
     public HXResponse<HXResponseBody<HXTransaction>> postTransactions(String address, HXTransactionRequest requestMap, HXFileHolder file) throws SignatureException, IOException {
         HashMap<String, String> headers = new HashMap<>();
         HashMap<String, Object> bodyMap = new HashMap<>();
@@ -98,7 +122,7 @@ public class HXService {
         String boundary;
         if (file == null) {
             bytesBody = HXUtils.convertJsonData(bodyMap);
-            headers.put("Content-Type","application/json;charset=utf-8");
+            headers.put("Content-Type", "application/json;charset=utf-8");
         } else {
             bytesBody = HXUtils.convertMultiPartFormData(bodyMap, file);
             boundary = file.getBoundary();
