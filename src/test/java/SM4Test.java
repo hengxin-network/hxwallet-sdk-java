@@ -4,6 +4,7 @@ import xin.heng.HXWallet;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -19,14 +20,19 @@ public class SM4Test {
 
     public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
 
-        String rawDataString = "这句话是使用sm4算法加密的";
+        String rawDataString = "这句话是使用SM4算法加密的";
 
         Security.addProvider(new BouncyCastleProvider());
         wallet = HXWallet.getInstance();
         wallet.initDefaultInjects();
 
-//        byte[] key = Hex.decode(SM4TestKeyHex);
-        byte[] key = Base64.getMimeDecoder().decode(SM4TestKeyBase64);
+        SecretKey secretKey = wallet.generateSM4Key();
+        byte[] key = secretKey.getEncoded();
+
+        assert "SM4".contentEquals(secretKey.getAlgorithm());
+        System.out.println(secretKey.getAlgorithm());
+        System.out.println(Base64.getMimeEncoder().encodeToString(key));
+        System.out.println(secretKey.getFormat());
 
         wallet.updateSM4Cipher(key);
 

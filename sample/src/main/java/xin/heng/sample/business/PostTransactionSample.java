@@ -25,7 +25,7 @@ public class PostTransactionSample {
         HXTransactionMemo memo = new HXTransactionMemo()
                 .setT("the type") // t -> type
                 .setD("the data") // d -> data
-                .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("the data".getBytes()))); // h -> hash
+                .setH(HXWallet.getInstance().digestBySM3("the data")); // h -> hash
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
@@ -33,7 +33,7 @@ public class PostTransactionSample {
                 .setOpponent_addresses(Arrays.asList(opponentAddress)) // opponent_addresses为相关address的列表
                 .setTrace_id(UUID.randomUUID().toString()); // trace_id
         try {
-            HXResponse<HXResponseBody<HXTransaction>> response = service.postTransactions(userAddress, request);
+            HXResponse<HXResponseBody<HXTransaction>> response = service.postTransactions(userAddress, request,null);
             System.out.println("Http Status Code: " + response.httpCode);
             if (response.isSuccess()) {
                 System.out.println("getInfo result: " + HXUtils.optToJson(response.responseBody));
@@ -53,6 +53,8 @@ public class PostTransactionSample {
             // JWT Token签名失败，需要检查sm2 sm3 privateKey factory是否注入以及是否正常运作
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -62,7 +64,7 @@ public class PostTransactionSample {
         HXTransactionMemo memo = new HXTransactionMemo()
                 .setT("test-fileupload-type") // t -> type
                 .setD("test-fileData-hxwalletJar") // d -> data
-                .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar".getBytes()))); // h -> hash
+                .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar")); // h -> hash
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset

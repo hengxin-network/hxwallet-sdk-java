@@ -47,7 +47,7 @@ public class WalletSample {
         }
 
         // 获取 sm3 摘要信息
-        byte[] sm3digest = SM3Sample.digest("this is a test data");
+        String sm3digest = SM3Sample.digest("this is a test data");
 
         // 设置 sm2私钥/公钥和sm4 key
         try {
@@ -61,22 +61,22 @@ public class WalletSample {
         }
 
         // 获取 sm2 签名信息
-        byte[] sm2Sign = SM2Sample.getSm2Sign("this is test data");
+        String sm2Sign = SM2Sample.getSm2Sign("this is test data");
 
         // sm2 加密
         String rawString = "this will be encrypt by sm2.";
-        byte[] sm2result = SM2Sample.encrypt(rawString.getBytes(), SampleUtils.testPublicKey);
+        String sm2result = SM2Sample.encrypt(rawString, SampleUtils.testPublicKey);
         // sm2 解密
-        byte[] decryptsm2 = SM2Sample.decrypt(sm2result);
+        String decryptsm2 = SM2Sample.decrypt(sm2result);
 
         System.out.println("raw encrypt string: " + rawString);
 
         // sm4加密数据
         String sm4RawData = "this data will be encrypt by sm4";
-        byte[] sm4Data = SM4Sample.encrypt(sm4RawData.getBytes());
+        String sm4Data = SM4Sample.encrypt(sm4RawData);
         // sm4解密数据
-        byte[] decrypt = SM4Sample.decrypt(sm4Data);
-        System.out.println("decrypt string: " + new String(decrypt));
+        String decrypt = SM4Sample.decrypt(sm4Data);
+        System.out.println("decrypt string: " + decrypt);
         System.out.println("sm4raw string:  " + sm4RawData);
 
         // 生成 jwt

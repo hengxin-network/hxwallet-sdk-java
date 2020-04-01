@@ -1,6 +1,5 @@
 package xin.heng.sample.crypto;
 
-import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXWallet;
 import xin.heng.crypto.HXDefaultKeyFactory;
 
@@ -14,15 +13,13 @@ import java.util.Base64;
 
 public class SM2Sample {
 
-    public static byte[] getSm2Sign(String signData) {
+    public static String getSm2Sign(String signData) {
         try {
             System.out.println("==========SM2 sign Sample==========");
             System.out.println("sm2 sign sign_data: " + signData);
-            byte[] result = HXWallet.getInstance().signBySM2(signData.getBytes());
-            System.out.println("sm2 sign length: " + result.length);
-            System.out.println("sm2 sign base64: " + Base64.getMimeEncoder().encodeToString(result));
-            String stringResult = Hex.toHexString(result);
-            System.out.println("sm2 sign hex string: " + stringResult);
+            String result = HXWallet.getInstance().signBySM2(signData);
+            System.out.println("sm2 sign length: " + result.length());
+            System.out.println("sm2 sign result: " + result);
             System.out.println("==========SM2 sign Sample==========");
             System.out.println();
             return result;
@@ -32,10 +29,10 @@ public class SM2Sample {
         return null;
     }
 
-    public static boolean verifySm2Sign(String signData, byte[] signature) {
+    public static boolean verifySm2Sign(String signData, String signature) {
         try {
             System.out.println("=========SM2 verify Sample=========");
-            boolean result = HXWallet.getInstance().verifyBySM2(signData.getBytes(), signature);
+            boolean result = HXWallet.getInstance().verifyBySM2(signData, signature);
             System.out.println("sm2 sign verify result: " + result);
             System.out.println("=========SM2 verify Sample=========");
             System.out.println();
@@ -46,7 +43,7 @@ public class SM2Sample {
         return false;
     }
 
-    public static byte[] encrypt(byte[] rawData, String key) {
+    public static String encrypt(String rawData, String key) {
         try {
             String publicEncoded = key;
             publicEncoded = publicEncoded.replace("-----BEGIN PUBLIC KEY-----", "");
@@ -60,8 +57,8 @@ public class SM2Sample {
             PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
 
             System.out.println("=======SM2 encrypt Sample=======");
-            byte[] result = HXWallet.getInstance().encryptBySM2(rawData, publicKey);
-            System.out.println("encrypt result base64: " + Base64.getMimeEncoder().encodeToString(result));
+            String result = HXWallet.getInstance().encryptBySM2(rawData, publicKey);
+            System.out.println("encrypt result: " + result);
             System.out.println("=======SM2 encrypt Sample=======");
             System.out.println();
             return result;
@@ -75,10 +72,10 @@ public class SM2Sample {
         return null;
     }
 
-    public static byte[] decrypt(byte[] encryptData) {
+    public static String decrypt(String encryptData) {
         System.out.println("=======SM2 decrypt Sample=======");
-        byte[] result = HXWallet.getInstance().decryptBySM2(encryptData);
-        System.out.println("decrypt string: " + new String(result));
+        String result = HXWallet.getInstance().decryptBySM2(encryptData);
+        System.out.println("decrypt string: " + result);
         System.out.println("=======SM2 decrypt Sample=======");
         System.out.println();
         return result;

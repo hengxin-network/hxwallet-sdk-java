@@ -6,14 +6,12 @@ import xin.heng.HXWallet;
 import java.util.Arrays;
 
 public class SM3Sample {
-    public static byte[] digest(String message) {
+    public static String digest(String message) {
         System.out.println("==========SM3 digest Sample==========");
         System.out.println("sm3 digest message data: " + message);
-        byte[] result = HXWallet.getInstance().digestBySM3(message.getBytes());
-        System.out.println("sm3 digest length: " + result.length);
-        System.out.println("sm3 digest array: " + Arrays.toString(result));
-        String stringResult = Hex.toHexString(result);
-        System.out.println("sm3 digest hexString: " + stringResult);
+        String result = HXWallet.getInstance().digestBySM3(message);
+        System.out.println("sm3 digest length: " + result.length());
+        System.out.println("sm3 digest result: " + result);
         System.out.println("==========SM3 digest Sample==========");
         System.out.println();
         return result;

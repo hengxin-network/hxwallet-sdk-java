@@ -144,13 +144,15 @@ API:
 
 API:
 ```java
+    public SecretKey generateSM4Key(); 
     public void updateSM4Cipher(byte[] key) throws InvalidKeyException 
     public byte[] encryptBySM4(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException 
     public byte[] decryptBySM4(byte[] encryptData) throws BadPaddingException, IllegalBlockSizeException 
 ```
 
 ```java
-    HXWallet.getInstance().updateSM4Cipher(sm4key);
+    SecretKey sm4Key = HXWallet.getInstance().generateSM4Key();
+    HXWallet.getInstance().updateSM4Cipher(sm4Key.getEncoded());
     byte[] rawData = "the data will be sm4 encrypt.".getBytes();
     byte[] encryptData = HXWallet.getInstance().encryptBySM4(rawData);
     // encryptData即为加密后的数据

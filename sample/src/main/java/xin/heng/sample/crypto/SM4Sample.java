@@ -4,17 +4,16 @@ import xin.heng.HXWallet;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
-import java.util.Base64;
 
 public class SM4Sample {
 
 
-    public static byte[] encrypt(byte[] rawString) {
+    public static String encrypt(String rawString) {
         try {
             System.out.println("=======SM4 encrypt Sample=======");
             System.out.println("raw String: ");
-            byte[] encrypt = HXWallet.getInstance().encryptBySM4(rawString);
-            System.out.println("encrypt base64: " + Base64.getMimeEncoder().encodeToString(encrypt));
+            String encrypt = HXWallet.getInstance().encryptBySM4(rawString);
+            System.out.println("encrypt result : " + encrypt);
             System.out.println("=======SM4 encrypt Sample=======");
             System.out.println();
             return encrypt;
@@ -27,11 +26,11 @@ public class SM4Sample {
         return null;
     }
 
-    public static byte[] decrypt(byte[] encryptData) {
+    public static String decrypt(String encryptData) {
         try {
             System.out.println("=======SM4 decrypt Sample=======");
-            byte[] decrypt = HXWallet.getInstance().decryptBySM4(encryptData);
-            System.out.println("decrypt String: " + new String(decrypt));
+            String decrypt = HXWallet.getInstance().decryptBySM4(encryptData);
+            System.out.println("decrypt String: " + decrypt);
             System.out.println("=======SM4 decrypt Sample=======");
             System.out.println();
             return decrypt;

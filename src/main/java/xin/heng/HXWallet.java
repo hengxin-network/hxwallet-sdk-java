@@ -4,6 +4,7 @@ import xin.heng.crypto.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
@@ -35,7 +36,9 @@ public class HXWallet {
         digest.injectDefault();
         sm3 = digest;
 
-        sm4 = new HXDefaultSM4Engine();
+        HXDefaultSM4Engine sm4Engine = new HXDefaultSM4Engine();
+        sm4Engine.injectDefault();
+        sm4 = sm4Engine;
     }
 
     public void injectSM2Engine(IHXSM2Engine engine) {
@@ -48,6 +51,10 @@ public class HXWallet {
 
     public void injectSM3(IHXSM3Digest digest) {
         sm3 = digest;
+    }
+
+    public void injectSM4(IHXSM4Engine engine) {
+        sm4 = engine;
     }
 
     public void setSM2PrivateKey(PrivateKey privateKey) throws InvalidKeyException {
@@ -157,6 +164,10 @@ public class HXWallet {
     public String digestBySM3(String message) {
         byte[] digest = sm3.digest(message.getBytes());
         return Base64.getMimeEncoder().encodeToString(digest);
+    }
+
+    public SecretKey generateSM4Key() {
+        return sm4.generateKey();
     }
 
     byte[] signBySM2(byte[] rawData) throws SignatureException {
