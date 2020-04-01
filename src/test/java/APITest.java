@@ -51,14 +51,14 @@ public class APITest {
         HXTransactionMemo memo = new HXTransactionMemo()
                 .setT("test-type")
                 .setD("test-data")
-                .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-data".getBytes())));
+                .setH(HXWallet.getInstance().digestBySM3("test-data"));
 
         HXTransactionRequest requestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
                 .setMemo(memo)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
-        HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap);
+        HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap,null);
         TestUtil.printResult(HXResponse);
 
 
@@ -71,7 +71,7 @@ public class APITest {
         HXTransactionMemo fileMemo = new HXTransactionMemo()
                 .setT("test-fileupload-type")
                 .setD("test-fileData-hxwalletJar")
-                .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar".getBytes())));
+                .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar"));
 
         HXTransactionRequest fileRequestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")

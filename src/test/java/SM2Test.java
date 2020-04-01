@@ -1,12 +1,10 @@
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXWallet;
 import xin.heng.crypto.HXDefaultKeyFactory;
 
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
 import java.util.Base64;
 
 public class SM2Test {
@@ -35,29 +33,23 @@ public class SM2Test {
             PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
             PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
 
-            byte[] encryptData = HXWallet.getInstance().encryptBySM2(testData.getBytes(), publicKey);
-            System.out.println("Encrypt data HexString: " + Hex.toHexString(encryptData));
-            System.out.println("Encrypt data Base64: " + Base64.getMimeEncoder().encodeToString(encryptData));
+            String encryptData = HXWallet.getInstance().encryptBySM2(testData, publicKey);
+            System.out.println("Encrypt data Base64: " + encryptData);
 
             HXWallet.getInstance().setSM2EnginePrivateKey(privateKey);
-            byte[] decryptData = HXWallet.getInstance().decryptBySM2(encryptData);
-            System.out.println("Decrypt data: " + new String(decryptData));
-            System.out.println("Decrypt data HexString: " + Hex.toHexString(decryptData));
-            System.out.println("Decrypt data Base64: " + Base64.getMimeEncoder().encodeToString(decryptData));
-
+            String decryptData = HXWallet.getInstance().decryptBySM2(encryptData);
+            System.out.println("Decrypt data: " + decryptData);
 
             HXWallet.getInstance().injectSM2Engine(new HXDefaultSM2Engine());
             HXWallet.getInstance().setSM2PrivateKey(TestUtil.pemTestKey);
 
-            byte[] result = HXWallet.getInstance().signBySM2(testData.getBytes());
+            String result = HXWallet.getInstance().signBySM2(testData);
 
-            System.out.println("length: " + result.length);
-            System.out.println(Arrays.toString(result));
-            String stringResult = Hex.toHexString(result);
-            System.out.println(stringResult);
+            System.out.println("length: " + result.length());
+            System.out.println(result);
 
             HXWallet.getInstance().setSM2SignerPublicKey(TestUtil.testPublicKey);
-            System.out.println("verify signature result: " + HXWallet.getInstance().verifyBySM2(testData.getBytes(), result));
+            System.out.println("verify signature result: " + HXWallet.getInstance().verifyBySM2(testData, result));
         } catch (Exception e) {
             e.printStackTrace();
         }

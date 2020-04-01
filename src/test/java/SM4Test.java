@@ -30,10 +30,10 @@ public class SM4Test {
 
         wallet.updateSM4Cipher(key);
 
-        byte[] result = wallet.encryptBySM4(rawDataString.getBytes());
-        System.out.println("encrypt data: " + Base64.getMimeEncoder().encodeToString(result));
+        String result = wallet.encryptBySM4(rawDataString);
+        System.out.println("encrypt data: " + result);
 
-        byte[] decryptData = wallet.decryptBySM4(result);
-        System.out.println("decrypt data: " + new String(decryptData));
+        String decryptData = wallet.decryptBySM4(result);
+        System.out.println("decrypt data: " + decryptData);
     }
 }

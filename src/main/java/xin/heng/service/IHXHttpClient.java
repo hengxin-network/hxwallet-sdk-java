@@ -14,7 +14,6 @@ public interface IHXHttpClient {
 
     HXResponse<String> get(String path, Map<String, String> headers, Map<String, String> queries);
 
-    HXResponse<String> post(String path, Map<String, String> queries, Map<String, String> headers, Map<String, Object> body);
+    HXResponse<String> post(String path, Map<String, String> queries, Map<String, String> headers, byte[] body);
 
-    HXResponse<String> postFile(String path, Map<String, String> queries, Map<String, String> headers, Map<String, String> body, HXFileHolder file);
 }

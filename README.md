@@ -237,6 +237,17 @@ API:
     HXJwt jwt = HXUtils.verifyJwt(wallet, verifyMaterial);
 ```
 
+3. 生成Body的byte[]的工具类方法
+jwt中，会对请求的method url body进行签名，工具类提供了两个生成body的byte[]的方法
+
+- convertJsonData方法会生成常规post请求的body数据，对应Content-Type为application/json
+- convertMultiPartFormData方法用于有文件需要上传的情形，对应Content-Type为multipart/form-data;boundary={HXFileHolder.getBoundary()}
+
+```java
+    public static byte[] convertJsonData(Map<String,Object> body)
+    public static byte[] convertMultiPartFormData(Map<String, String> body, HXFileHolder fileHolder) throws IOException 
+```
+
 ##### 网络接口
 
 0. 设置BaseUrl 
@@ -295,5 +306,9 @@ TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上�
                     .setOpponent_addresses(Collections.singletonList(opponentAddress))
                     .setTrace_id(UUID.randomUUID().toString());
     HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(userAddress, requestMap);
+   
+    File file;// file为要上传的文件
+    HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(userAddress, requestMap, file);       
+
 ```
 

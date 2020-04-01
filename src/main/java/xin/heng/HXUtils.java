@@ -98,14 +98,12 @@ public class HXUtils {
                 System.arraycopy(jwtMaterial.getBody(), 0, temp, rawSig.length, jwtMaterial.getBody().length);
                 rawSig = temp;
             }
-            System.out.println(new String(rawSig));
             byte[] sig = wallet.digestBySM3(rawSig);
-            payloadJson = payloadJson + ",\"sig\":\"" + Base64.getMimeEncoder().encodeToString(sig) + "\"}";
+            String sigBase64 = Base64.getMimeEncoder().encodeToString(sig);
+            payloadJson = payloadJson + ",\"sig\":\"" + sigBase64 + "\"}";
         } else {
             payloadJson = payloadJson + "}";
         }
-
-        System.out.println("payload: " + payloadJson);
 
         String headerJson = "{\"alg\":\"SM2\",\"typ\":\"JWT\"}";
 
@@ -116,9 +114,10 @@ public class HXUtils {
         byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 
         //sm2签名
-        byte[] signByte = wallet.signBySM2(jwtSM3Hash);
+        byte[] sign = wallet.signBySM2(jwtSM3Hash);
+        String signature = Base64.getUrlEncoder().encodeToString(sign);
         //拼接token
-        String token = preJwt + "." + Base64.getUrlEncoder().encodeToString(signByte);
+        String token = preJwt + "." + signature;
 
         return token.replace("=", "");
     }
@@ -147,7 +146,6 @@ public class HXUtils {
                 System.arraycopy(jwtMaterial.getBody(), 0, temp, rawSig.length, jwtMaterial.getBody().length);
                 rawSig = temp;
             }
-            System.out.println(new String(rawSig));
             byte[] sig = wallet.digestBySM3(rawSig);
             String sigBase64 = Base64.getMimeEncoder().encodeToString(sig);
             jwtPayload.setSig(sigBase64);
@@ -167,8 +165,8 @@ public class HXUtils {
         byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 
         //sm2签名
-        byte[] signByte = wallet.signBySM2(jwtSM3Hash);
-        String signature = Base64.getUrlEncoder().encodeToString(signByte);
+        byte[] sign = wallet.signBySM2(jwtSM3Hash);
+        String signature = Base64.getUrlEncoder().encodeToString(sign);
         //拼接token
         String token = preJwt + "." + signature;
 
@@ -200,7 +198,7 @@ public class HXUtils {
         String preJwt = headerBase64 + "." + payloadBase64;
         byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
         try {
-            wallet.verifyBySM2(jwtSM3Hash, Base64.getUrlDecoder().decode(signature));
+            wallet.verifyBySM2(new String(jwtSM3Hash), Base64.getMimeEncoder().encodeToString(Base64.getUrlDecoder().decode(signature)));
         } catch (SignatureException e) {
             return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_SIGNATURE_NOT_VALID, "jwt signature not valid");
         }
@@ -220,9 +218,8 @@ public class HXUtils {
                 System.arraycopy(material.getBody(), 0, temp, rawSig.length, material.getBody().length);
                 rawSig = temp;
             }
-            byte[] digest = wallet.digestBySM3(rawSig);
-            String digestBase64 = Base64.getMimeEncoder().encodeToString(digest);
-            if (!sig.contentEquals(digestBase64)) {
+            String digest = wallet.digestBySM3(new String(rawSig));
+            if (!sig.contentEquals(digest)) {
                 return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_PAYLOAD_SIG_NOT_VALID, "jwt payload sig not valid.");
             }
         }
@@ -235,76 +232,67 @@ public class HXUtils {
         return new HXJwtVerifyResult(jwt);
     }
 
-    public static byte[] packageFormData(HXFileHolder fileHolder) throws IOException {
-        String end = "\r\n";
-        StringBuilder prev = new StringBuilder();
-        prev.append("--");
-        prev.append(fileHolder.getBoundary());
-        prev.append(end);
-        prev.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
-        prev.append(fileHolder.getUploadName());
-        prev.append("\"\r\n");
-        prev.append("Content-Type: application/octet-stream");
-        prev.append(end + end);
-
-        if (fileHolder.getFile().length() > Integer.MAX_VALUE) {
-            throw new IOException("File too big, please slice file first.");
-        }
-        int fileLength = (int) fileHolder.getFile().length();
-        byte[] fileBytes = new byte[fileLength];
-        FileInputStream is = new FileInputStream(fileHolder.getFile());
-        is.read(fileBytes);
-        is.close();
-
-        StringBuilder after = new StringBuilder();
-        after.append("\r\n--" + fileHolder.getBoundary() + "--\r\n\r\n");
-
-        byte[] prevStr = prev.toString().getBytes();
-        byte[] afterStr = after.toString().getBytes();
-        byte[] out = new byte[prevStr.length + fileBytes.length + afterStr.length];
-        System.arraycopy(prevStr, 0, out, 0, prevStr.length);
-        System.arraycopy(fileBytes, 0, out, prevStr.length, fileBytes.length);
-        System.arraycopy(afterStr, 0, out, prevStr.length + fileBytes.length, afterStr.length);
-        return out;
+    public static byte[] convertJsonData(Map<String, Object> body) {
+        if (body == null || body.isEmpty()) return new byte[0];
+        return HXUtils.optToJson(body).getBytes();
     }
 
-    public static byte[] packageFormData(Map<String, String> body, HXFileHolder fileHolder) throws IOException {
+    public static byte[] convertMultiPartFormData(Map<String, Object> body, HXFileHolder fileHolder) throws IOException {
         String end = "\r\n";
-        StringBuilder prev = new StringBuilder();
-        prev.append("--");
-        prev.append(fileHolder.getBoundary());
-        prev.append(end);
-        prev.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
-        prev.append(fileHolder.getUploadName());
-        prev.append("\"\r\n");
-        prev.append("Content-Type: application/octet-stream");
-        prev.append(end + end);
-
-        if (fileHolder.getFile().length() > Integer.MAX_VALUE) {
-            throw new IOException("File too big, please slice file first.");
+        String boundary;
+        if (fileHolder != null && fileHolder.getBoundary() != null && fileHolder.getBoundary().length() != 0) {
+            boundary = fileHolder.getBoundary();
+        } else {
+            boundary = UUID.randomUUID().toString();
         }
-        int fileLength = (int) fileHolder.getFile().length();
-        byte[] fileBytes = new byte[fileLength];
-        FileInputStream is = new FileInputStream(fileHolder.getFile());
-        is.read(fileBytes);
-        is.close();
+
+        StringBuilder prev = new StringBuilder();
 
         final StringBuilder formDataBuilder = new StringBuilder();
-        formDataBuilder.append(end); // 给文件末尾换行
+        byte[] fileBytes;
+        if (fileHolder != null && fileHolder.getFile() != null) {
+            if (fileHolder.getFile().length() > Integer.MAX_VALUE) {
+                throw new IOException("File too big, please slice file first.");
+            }
+            prev.append("--");
+            prev.append(boundary);
+            prev.append(end);
+            prev.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
+            prev.append(fileHolder.getUploadName());
+            prev.append("\"\r\n");
+            prev.append("Content-Type: application/octet-stream");
+            prev.append(end + end);
+
+            int fileLength = (int) fileHolder.getFile().length();
+            fileBytes = new byte[fileLength];
+            FileInputStream is = new FileInputStream(fileHolder.getFile());
+            is.read(fileBytes);
+            is.close();
+
+            formDataBuilder.append(end); // 给文件末尾换行
+        } else {
+            fileBytes = new byte[0];
+        }
+
         body.forEach((k, v) -> {
             formDataBuilder.append("--");
-            formDataBuilder.append(fileHolder.getBoundary());
+            formDataBuilder.append(boundary);
             formDataBuilder.append(end);
             formDataBuilder.append("Content-Disposition: form-data; name=\"");
             formDataBuilder.append(k);
             formDataBuilder.append("\"");
             formDataBuilder.append(end + end);
-            formDataBuilder.append(v);
+            if (v instanceof String) {
+                formDataBuilder.append((String) v);
+            } else {
+                formDataBuilder.append(HXUtils.optToJson(v));
+            }
+
             formDataBuilder.append(end);
         });
 
         StringBuilder after = new StringBuilder();
-        after.append("--" + fileHolder.getBoundary() + "--\r\n\r\n");
+        after.append("--" + boundary + "--\r\n\r\n");
 
         byte[] prevBytes = prev.toString().getBytes();
         byte[] formBytes = formDataBuilder.toString().getBytes();
@@ -317,5 +305,4 @@ public class HXUtils {
 
         return out;
     }
-
 }

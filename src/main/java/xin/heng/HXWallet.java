@@ -6,6 +6,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 public class HXWallet {
 
@@ -123,32 +124,46 @@ public class HXWallet {
         }
     }
 
-    public byte[] encryptBySM2(byte[] rawData,PublicKey publicKey){
-        return sm2Engine.encrypt(rawData, publicKey);
+    public String encryptBySM2(String rawData, PublicKey publicKey) {
+        byte[] encrypt = sm2Engine.encrypt(rawData.getBytes(), publicKey);
+        return Base64.getMimeEncoder().encodeToString(encrypt);
     }
 
-    public byte[] decryptBySM2(byte[] encryptData){
-        return sm2Engine.decrypt(encryptData);
+    public String decryptBySM2(String encryptData) {
+        byte[] decode = Base64.getMimeDecoder().decode(encryptData);
+        return new String(sm2Engine.decrypt(decode));
     }
 
-    public byte[] encryptBySM4(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException {
-        return sm4.encrypt(rawData);
+    public String encryptBySM4(String rawData) throws BadPaddingException, IllegalBlockSizeException {
+        byte[] encrypt = sm4.encrypt(rawData.getBytes());
+        return Base64.getMimeEncoder().encodeToString(encrypt);
     }
 
-    public byte[] decryptBySM4(byte[] encryptData) throws BadPaddingException, IllegalBlockSizeException {
-        return sm4.decrypt(encryptData);
+    public String decryptBySM4(String encryptData) throws BadPaddingException, IllegalBlockSizeException {
+        byte[] decode = Base64.getMimeDecoder().decode(encryptData);
+        return new String(sm4.decrypt(decode));
     }
 
-    public byte[] signBySM2(byte[] rawData) throws SignatureException {
+    public String signBySM2(String rawData) throws SignatureException {
+        byte[] sign = sm2Signer.sign(rawData.getBytes());
+        return Base64.getMimeEncoder().encodeToString(sign);
+    }
+
+    public boolean verifyBySM2(String rawData, String signature) throws SignatureException {
+        byte[] decode = Base64.getMimeDecoder().decode(signature);
+        return sm2Signer.verify(rawData.getBytes(), decode);
+    }
+
+    public String digestBySM3(String message) {
+        byte[] digest = sm3.digest(message.getBytes());
+        return Base64.getMimeEncoder().encodeToString(digest);
+    }
+
+    byte[] signBySM2(byte[] rawData) throws SignatureException {
         return sm2Signer.sign(rawData);
     }
 
-    public boolean verifyBySM2(byte[] rawData, byte[] signature) throws SignatureException {
-        return sm2Signer.verify(rawData, signature);
-    }
-
-    public byte[] digestBySM3(byte[] message) {
+    byte[] digestBySM3(byte[] message) {
         return sm3.digest(message);
     }
-
 }
