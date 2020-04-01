@@ -3,11 +3,9 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXJwtBuildMaterial;
-import xin.heng.service.vo.HXTransaction;
-import xin.heng.service.vo.HXTransactionMemo;
+import xin.heng.service.vo.*;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.HashMap;
@@ -93,7 +91,7 @@ public class HXService {
         HXJwtBuildMaterial jwtMaterial = new HXJwtBuildMaterial();
         jwtMaterial.setAddress(address)
                 .setExpiredTime(expiredTime)
-                .setBody(bodyMap)
+                .setBody(HXUtils.optToJson(bodyMap).getBytes())
                 .setRequestMethod(HXConstants.HTTP_METHOD_POST)
                 .setUrl(HXUtils.buildUrlPathWithQueries("/transactions", null));
 
@@ -113,7 +111,38 @@ public class HXService {
         return response;
     }
 
-    public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException, MalformedURLException {
+    public HXResponse<HXResponseBody<HXTransaction>> postTransactions(String address, HXTransactionRequest requestMap,HXFileHolder file) throws SignatureException, IOException {
+        HashMap<String, String> bodyMap = new HashMap<>();
+        bodyMap.put("asset", requestMap.getAsset());
+        bodyMap.put("opponent_addresses", HXUtils.optToJson(requestMap.getOpponent_addresses()));
+        bodyMap.put("trace_id", requestMap.getTrace_id());
+        String memoString = "{\"t\":\"" + requestMap.getMemo().getT() + "\",\"h\":\"" + requestMap.getMemo().getH() + "\",\"d\":\"" + requestMap.getMemo().getD() + "\"}";
+        bodyMap.put("memo", memoString);
+
+        HXJwtBuildMaterial jwtMaterial = new HXJwtBuildMaterial();
+        jwtMaterial.setAddress(address)
+                .setExpiredTime(expiredTime)
+                .setBody(HXUtils.packageFormData(bodyMap,file))
+                .setRequestMethod(HXConstants.HTTP_METHOD_POST)
+                .setUrl(HXUtils.buildUrlPathWithQueries("/transactions", null));
+
+        String jwtToken = HXUtils.buildJwtString(wallet, jwtMaterial);
+        HashMap<String, String> headers = new HashMap<>();
+        System.out.println("jwt: " + jwtToken);
+        headers.put("Authorization", "Bearer " + jwtToken);
+        headers.put("Content-Type", "application/json;charset=utf-8");
+
+        HXResponse<String> stringHXResponse = httpClient.postFile("/transactions", null, headers, bodyMap,file);
+        HXResponse<HXResponseBody<HXTransaction>> response = new HXResponse<>();
+        response.httpCode = stringHXResponse.httpCode;
+        response.originError = stringHXResponse.originError;
+        if (stringHXResponse.responseBody != null && stringHXResponse.responseBody.length() != 0) {
+            response.responseBody = HXUtils.optFromJson(stringHXResponse.responseBody, HXTransactionBody.class);
+        }
+        return response;
+    }
+
+    public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException {
         HashMap<String, String> queries = new HashMap<>();
         queries.put("from", String.valueOf(requestMap.getFrom()));
         queries.put("limit", String.valueOf(requestMap.getLimit()));
@@ -150,5 +179,25 @@ public class HXService {
 
         }
         return snapshotsResponse;
+    }
+
+    public HXResponse<String> uploadFile(String address, HXFileHolder file) throws SignatureException, IOException {
+        HashMap<String, String> headers = new HashMap();
+        headers.put("Connection", "Keep-Alive");
+        headers.put("Charset", "UTF-8");
+
+        HXJwtBuildMaterial jwtMaterial = new HXJwtBuildMaterial();
+        jwtMaterial.setAddress(address)
+                .setExpiredTime(expiredTime)
+                .setBody(HXUtils.packageFormData(file))
+                .setRequestMethod(HXConstants.HTTP_METHOD_POST)
+                .setUrl(HXUtils.buildUrlPathWithQueries("/files", null));
+
+        String jwtToken = HXUtils.buildJwtString(wallet, jwtMaterial);
+        headers.put("Authorization", "Bearer " + jwtToken);
+
+        HXResponse<String> response = httpClient.postFile("/files", null, headers,null, file);
+
+        return response;
     }
 }

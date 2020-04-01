@@ -99,5 +99,6 @@ public class WalletSample {
 
         // postTransaction 接口，具体调用查看 PostTransactionSample 内
         PostTransactionSample.postTransaction(service, SampleUtils.userAddress, SampleUtils.opponentAddress, SampleUtils.testAsset);
+        PostTransactionSample.postTransactionWithFile(service, SampleUtils.userAddress, SampleUtils.opponentAddress, SampleUtils.testAsset);
     }
 }

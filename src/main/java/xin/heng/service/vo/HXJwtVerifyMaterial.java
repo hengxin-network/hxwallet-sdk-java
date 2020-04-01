@@ -1,13 +1,10 @@
 package xin.heng.service.vo;
 
-import java.net.URL;
-import java.util.Map;
-
 public class HXJwtVerifyMaterial {
     private String rawJwtString;
     private String requestMethod;
     private String url;
-    private Map<String, Object> body;
+    private byte[] body;
     private boolean verifySig = true;
 
     public String getRawJwtString() {
@@ -37,11 +34,11 @@ public class HXJwtVerifyMaterial {
         return this;
     }
 
-    public Map<String, Object> getBody() {
+    public byte[] getBody() {
         return body;
     }
 
-    public HXJwtVerifyMaterial setBody(Map<String, Object> body) {
+    public HXJwtVerifyMaterial setBody(byte[] body) {
         this.body = body;
         return this;
     }

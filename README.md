@@ -259,10 +259,12 @@ API:
 
 2. getSnapshots 查询snapshots记录
 根据address和提交的参数查询snapshots的记录
-默认limit=20, from=1, order为HXSnapshotsRequest.ORDER_ASC,
-limit 最大不能超过500
-order为字符串枚举 "ASC"或"DESC" HXSnapshotsRequest类提供了常量ORDER_ASC和ORDER_DESC
-asset为可选参数
+参数以Query的格式带在url里
+参数默认值:limit=20, from=1, order为HXSnapshotsRequest.ORDER_ASC,
+- limit:一次返回多少条数据 最大不能超过500
+- from :
+- order:查询排序 为字符串枚举 "ASC"或"DESC" HXSnapshotsRequest类提供了常量ORDER_ASC和ORDER_DESC
+- asset:为可选参数,如果未传,则按顺序返回该address能查询到所有asset数据
 
 ```java
     public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException 
@@ -274,15 +276,12 @@ asset为可选参数
 
 3. postTransaction 提交一条记录上链
 
-TransactionRequest的所有参数均为必填
+TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上传文件附件时
+参数以multipart/form-data的形式上传,包含asset, opponent_addresses, trace_id, memo
 
-包含asset, opponent_addresses, trace_id, memo
-
-trace_id一般使用UUID
-
-memo为TransactionMemo
-
-opponent_addresses 是一个包含了相关address的列表
+- trace_id: 防重放攻击使用,一般使用UUID
+- memo: 链上记录数据，为TransactionMemo
+- opponent_addresses: 是一个包含了相关address的列表
 
 ```java
     HXTransactionMemo memo = new HXTransactionMemo()

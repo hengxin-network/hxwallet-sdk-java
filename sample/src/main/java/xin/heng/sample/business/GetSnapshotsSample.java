@@ -34,8 +34,6 @@ public class GetSnapshotsSample {
         } catch (SignatureException e) {
             e.printStackTrace();
             // JWT Token签名失败，需要检查sm2 sm3 privateKey factory是否注入以及是否正常运作
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
         return null;
     }

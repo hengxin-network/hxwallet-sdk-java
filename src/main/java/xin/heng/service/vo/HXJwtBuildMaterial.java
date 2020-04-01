@@ -1,7 +1,5 @@
 package xin.heng.service.vo;
 
-import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
 
 public class HXJwtBuildMaterial {
@@ -10,7 +8,7 @@ public class HXJwtBuildMaterial {
     private String jti = UUID.randomUUID().toString();
     private String requestMethod;
     private String url;
-    private Map<String, Object> body;
+    private byte[] body;
     private boolean requestSignature = true;
 
     public String getAddress() {
@@ -58,11 +56,11 @@ public class HXJwtBuildMaterial {
         return this;
     }
 
-    public Map<String, Object> getBody() {
+    public byte[] getBody() {
         return body;
     }
 
-    public HXJwtBuildMaterial setBody(Map<String, Object> body) {
+    public HXJwtBuildMaterial setBody(byte[] body) {
         this.body = body;
         return this;
     }

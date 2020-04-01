@@ -6,10 +6,7 @@ import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.HXDefaultHttpClient;
 import xin.heng.service.IHXHttpClient;
-import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXJwt;
-import xin.heng.service.vo.HXJwtBuildMaterial;
-import xin.heng.service.vo.HXJwtVerifyMaterial;
+import xin.heng.service.vo.*;
 
 import java.net.URL;
 import java.security.Security;
@@ -48,8 +45,9 @@ public class JWTTokenTest {
                     .setUrl(HXUtils.buildUrlPathWithQueries("/info", null));
 
             System.out.println("=======Verify=======");
-            HXJwt jwt = HXUtils.verifyJwt(wallet, verifyMaterial);
-            System.out.println("verify result: " + HXUtils.optToJson(jwt));
+            HXJwtVerifyResult jwtResult = HXUtils.verifyJwt(wallet, verifyMaterial);
+            System.out.println("verify passed: " + jwtResult.isPassed());
+            System.out.println("verify jwt result: "+ HXUtils.optToJson(jwtResult));
             System.out.println("=======Verify=======");
             System.out.println();
             URL url = new URL("http://106.14.59.4:8930/info");
