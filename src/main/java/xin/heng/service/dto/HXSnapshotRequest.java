@@ -7,7 +7,7 @@ public class HXSnapshotRequest {
     public static final String ORDER_DESC = "DESC";
 
     private String asset;
-    private int from = 1;
+    private int from;
     private int limit = 20;
     private String order = ORDER_ASC;
 

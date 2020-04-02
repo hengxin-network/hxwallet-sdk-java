@@ -5,16 +5,15 @@ import xin.heng.service.HXDefaultHttpClient;
 import xin.heng.service.HXService;
 import xin.heng.service.IHXHttpClient;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
-import xin.heng.service.vo.HXTransaction;
-import xin.heng.service.vo.HXTransactionMemo;
+import xin.heng.service.vo.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class APITest {
@@ -47,23 +46,42 @@ public class APITest {
         TestUtil.printResult(getInfoResponse);
 
         // getSnapshots
-        HXResponse<HXSnapshotsBody> snapshotsResponse = api.getSnapshots(TestUtil.userAddress, new HXSnapshotRequest());
+        HXSnapshotRequest snapshotRequest = new HXSnapshotRequest()
+                .setOrder(HXSnapshotRequest.ORDER_DESC);
+        HXResponse<HXSnapshotsBody> snapshotsResponse = api.getSnapshots(TestUtil.userAddress, snapshotRequest);
         TestUtil.printResult(snapshotsResponse);
 
         // postTransaction 只上传数据，不附带文件
-        HXTransactionMemo memo = new HXTransactionMemo()
+        HXPubData pubData = new HXPubData()
                 .setT("test-type")
                 .setD("test-data")
                 .setH(HXWallet.getInstance().digestBySM3("test-data"));
 
         HXTransactionRequest requestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
-                .setMemo(memo)
+                .setPub_data(pubData)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
+
                 .setTrace_id(UUID.randomUUID().toString());
         HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
         TestUtil.printResult(HXResponse);
 
+        // postTransaction 给新的Address附加权限
+        List<HXFileInfo> fileInfos;
+        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles()!=null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()){
+            fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
+        }else {
+            fileInfos = HXUtils.optFromJson(TestUtil.testFileInfos, HXFileInfoList.class);
+        }
+
+        HXTransactionRequest updateFilesRequest = new HXTransactionRequest()
+                .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
+                .setPub_data(pubData)
+                .setFiles(fileInfos)
+                .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress,TestUtil.userAddress))
+                .setTrace_id(UUID.randomUUID().toString());
+        HXResponse<HXResponseBody<HXTransaction>> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+        TestUtil.printResult(updateFilesResponse);
 
         // postTransaction 上传数据并附带文件
         File file = new File("./outputs/hxwallet-1.0.jar");
@@ -71,19 +89,21 @@ public class APITest {
                 .setFile(file)
                 .setUploadName("hxwallet.jar");
 
-        HXTransactionMemo fileMemo = new HXTransactionMemo()
+        HXPubData filePubData = new HXPubData()
                 .setT("test-fileupload-type")
                 .setD("test-fileData-hxwalletJar")
                 .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar"));
 
         HXTransactionRequest fileRequestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
-                .setMemo(fileMemo)
+                .setPub_data(filePubData)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
 
         HXResponse<HXResponseBody<HXTransaction>> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
         TestUtil.printResult(fileResponse);
+
+
 
     }
 

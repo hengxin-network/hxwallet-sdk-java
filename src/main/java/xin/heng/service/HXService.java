@@ -3,10 +3,12 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.*;
+import xin.heng.service.vo.HXBaseUrl;
+import xin.heng.service.vo.HXFileHolder;
+import xin.heng.service.vo.HXJwtBuildMaterial;
+import xin.heng.service.vo.HXTransaction;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.HashMap;
 
@@ -56,7 +58,7 @@ public class HXService {
         this.expiredTime = expiredTime;
     }
 
-    public HXResponse<HXUserInfoBody> getInfo(String address) throws SignatureException, MalformedURLException {
+    public HXResponse<HXUserInfoBody> getInfo(String address) throws SignatureException {
         HXJwtBuildMaterial jwtMaterial = new HXJwtBuildMaterial();
         jwtMaterial.setAddress(address)
                 .setExpiredTime(expiredTime)
@@ -111,9 +113,10 @@ public class HXService {
         bodyMap.put("asset", requestMap.getAsset());
         bodyMap.put("opponent_addresses", requestMap.getOpponent_addresses());
         bodyMap.put("trace_id", requestMap.getTrace_id());
-        String memoString = "{\"t\":\"" + requestMap.getMemo().getT() + "\",\"h\":\"" + requestMap.getMemo().getH() + "\",\"d\":\"" + requestMap.getMemo().getD() + "\"}";
-        bodyMap.put("memo", memoString);
-
+        bodyMap.put("pub_data", requestMap.getPub_data());
+        if (requestMap.getFiles() != null) {
+            bodyMap.put("files", requestMap.getFiles());
+        }
         jwtMaterial.setAddress(address)
                 .setExpiredTime(expiredTime)
                 .setRequestMethod(HXConstants.HTTP_METHOD_POST)
@@ -171,14 +174,6 @@ public class HXService {
         snapshotsResponse.originError = stringResponse.originError;
         if (stringResponse.responseBody != null && stringResponse.responseBody.length() != 0) {
             snapshotsResponse.responseBody = HXUtils.optFromJson(stringResponse.responseBody, HXSnapshotsBody.class);
-            try {
-                snapshotsResponse.responseBody.data.forEach(snapshot -> {
-                    snapshot.setParsed_memo(HXUtils.optFromJson(snapshot.getMemo(), HXTransactionMemo.class));
-                });
-            } catch (Exception e) {
-//                     do nothing;
-            }
-
         }
         return snapshotsResponse;
     }

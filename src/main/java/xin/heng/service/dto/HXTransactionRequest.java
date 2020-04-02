@@ -1,6 +1,7 @@
 package xin.heng.service.dto;
 
-import xin.heng.service.vo.HXTransactionMemo;
+import xin.heng.service.vo.HXFileInfo;
+import xin.heng.service.vo.HXPubData;
 
 import java.util.List;
 
@@ -8,7 +9,8 @@ public class HXTransactionRequest {
     private String asset;
     private List<String> opponent_addresses;
     private String trace_id;
-    private HXTransactionMemo memo;
+    private HXPubData pub_data;
+    private List<HXFileInfo> files;
 
     public String getAsset() {
         return asset;
@@ -20,10 +22,6 @@ public class HXTransactionRequest {
 
     public String getTrace_id() {
         return trace_id;
-    }
-
-    public HXTransactionMemo getMemo() {
-        return memo;
     }
 
     public HXTransactionRequest setAsset(String asset) {
@@ -41,9 +39,21 @@ public class HXTransactionRequest {
         return this;
     }
 
-    public HXTransactionRequest setMemo(HXTransactionMemo memo) {
-        this.memo = memo;
+    public HXPubData getPub_data() {
+        return pub_data;
+    }
+
+    public HXTransactionRequest setPub_data(HXPubData pub_data) {
+        this.pub_data = pub_data;
         return this;
     }
 
+    public List<HXFileInfo> getFiles() {
+        return files;
+    }
+
+    public HXTransactionRequest setFiles(List<HXFileInfo> files) {
+        this.files = files;
+        return this;
+    }
 }

@@ -1,5 +1,7 @@
 package xin.heng.service.vo;
 
+import java.util.List;
+
 public class HXSnapshot {
     String created_at;
     String asset;
@@ -7,7 +9,8 @@ public class HXSnapshot {
     String opponent_id;
     String amount;
     String memo;
-    HXTransactionMemo parsed_memo;
+    HXPubData pub_data;
+    List<HXFileInfo> files;
     long height;
 
     public String getCreated_at() {
@@ -66,11 +69,20 @@ public class HXSnapshot {
         this.height = height;
     }
 
-    public HXTransactionMemo getParsed_memo() {
-        return parsed_memo;
+    public HXPubData getPub_data() {
+        return pub_data;
     }
 
-    public void setParsed_memo(HXTransactionMemo parsed_memo) {
-        this.parsed_memo = parsed_memo;
+    private void setPub_data(HXPubData pub_data) {
+        this.pub_data = pub_data;
+    }
+
+    public List<HXFileInfo> getFiles() {
+        return files;
+    }
+
+    public HXSnapshot setFiles(List<HXFileInfo> files) {
+        this.files = files;
+        return this;
     }
 }

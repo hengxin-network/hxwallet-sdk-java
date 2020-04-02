@@ -1,6 +1,6 @@
 package xin.heng.service.vo;
 
-public class HXTransactionMemo {
+public class HXPubData {
     private String t; // type
     private String d; // data
     private String h; // hash
@@ -9,7 +9,7 @@ public class HXTransactionMemo {
         return t;
     }
 
-    public HXTransactionMemo setT(String t) {
+    public HXPubData setT(String t) {
         this.t = t;
         return this;
     }
@@ -18,7 +18,7 @@ public class HXTransactionMemo {
         return d;
     }
 
-    public HXTransactionMemo setD(String d) {
+    public HXPubData setD(String d) {
         this.d = d;
         return this;
     }
@@ -27,7 +27,7 @@ public class HXTransactionMemo {
         return h;
     }
 
-    public HXTransactionMemo setH(String h) {
+    public HXPubData setH(String h) {
         this.h = h;
         return this;
     }

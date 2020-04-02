@@ -83,7 +83,9 @@ public class HXDefaultHttpClient implements IHXHttpClient {
             connection.setUseCaches(false);
             connection.setRequestMethod("POST");
             connection.connect();
-
+            if (body!=null) {
+                System.out.println("body: "+new String(body));
+            }
             if (body != null) {
                 DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
                 writer.write(body);
