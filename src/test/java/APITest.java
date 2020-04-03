@@ -8,6 +8,7 @@ import xin.heng.service.dto.*;
 import xin.heng.service.vo.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -68,9 +69,9 @@ public class APITest {
 
         // postTransaction 给新的Address附加权限
         List<HXFileInfo> fileInfos;
-        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles()!=null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()){
+        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
             fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
-        }else {
+        } else {
             fileInfos = HXUtils.optFromJson(TestUtil.testFileInfos, HXFileInfoList.class);
         }
 
@@ -78,21 +79,21 @@ public class APITest {
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
                 .setPub_data(pubData)
                 .setFiles(fileInfos)
-                .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress,TestUtil.userAddress))
+                .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress, TestUtil.userAddress))
                 .setTrace_id(UUID.randomUUID().toString());
         HXResponse<HXResponseBody<HXTransaction>> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
         TestUtil.printResult(updateFilesResponse);
 
         // postTransaction 上传数据并附带文件
-        File file = new File("./outputs/hxwallet-1.0.jar");
+        File file = new File("./src/test/resources/test.txt");
         HXFileHolder fileHolder = new HXFileHolder()
                 .setFile(file)
-                .setUploadName("hxwallet.jar");
+                .setUploadName("test.txt");
 
         HXPubData filePubData = new HXPubData()
                 .setT("test-fileupload-type")
-                .setD("test-fileData-hxwalletJar")
-                .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar"));
+                .setD("test-fileData-testfile")
+                .setH(HXWallet.getInstance().digestBySM3("test-fileData-testfile"));
 
         HXTransactionRequest fileRequestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
@@ -103,8 +104,14 @@ public class APITest {
         HXResponse<HXResponseBody<HXTransaction>> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
         TestUtil.printResult(fileResponse);
 
-
-
+// 从链上获取并下载文件保存到本地
+        File downloadFile = new File("./download/test_" + System.currentTimeMillis() + ".txt");
+        if (!downloadFile.exists()){
+            File parent = new File(downloadFile.getParent());
+            if (!parent.exists()) parent.mkdirs();
+            downloadFile.createNewFile();
+        }
+        HXResponse<File> fileHXResponse = api.getFile(TestUtil.userAddress, fileInfos.get(0), downloadFile);
     }
 
 }

@@ -98,8 +98,7 @@ public class HXUtils {
                 System.arraycopy(jwtMaterial.getBody(), 0, temp, rawSig.length, jwtMaterial.getBody().length);
                 rawSig = temp;
             }
-            byte[] sig = wallet.digestBySM3(rawSig);
-            String sigBase64 = Base64.getMimeEncoder().encodeToString(sig);
+            String sigBase64 = wallet.digestBySM3(new String(rawSig));
             payloadJson = payloadJson + ",\"sig\":\"" + sigBase64 + "\"}";
         } else {
             payloadJson = payloadJson + "}";
@@ -146,8 +145,7 @@ public class HXUtils {
                 System.arraycopy(jwtMaterial.getBody(), 0, temp, rawSig.length, jwtMaterial.getBody().length);
                 rawSig = temp;
             }
-            byte[] sig = wallet.digestBySM3(rawSig);
-            String sigBase64 = Base64.getMimeEncoder().encodeToString(sig);
+            String sigBase64 = wallet.digestBySM3(new String(rawSig));
             jwtPayload.setSig(sigBase64);
             payloadJson = payloadJson + ",\"sig\":\"" + sigBase64 + "\"}";
         } else {

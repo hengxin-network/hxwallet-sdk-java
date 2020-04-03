@@ -174,7 +174,7 @@ public class HXWallet {
         return sm2Signer.sign(rawData);
     }
 
-    byte[] digestBySM3(byte[] message) {
+    public byte[] digestBySM3(byte[] message) {
         return sm3.digest(message);
     }
 }

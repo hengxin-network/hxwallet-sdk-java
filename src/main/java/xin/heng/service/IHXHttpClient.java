@@ -2,7 +2,6 @@ package xin.heng.service;
 
 import xin.heng.service.dto.HXResponse;
 import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
 
 import java.util.Map;
 

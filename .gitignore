@@ -27,3 +27,5 @@ hs_err_pid*
 build/generated/
 build/tmp/compileJava/
 build/tmp/compileTestJava/
+
+download/

@@ -3,11 +3,11 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
-import xin.heng.service.vo.HXJwtBuildMaterial;
-import xin.heng.service.vo.HXTransaction;
+import xin.heng.service.vo.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SignatureException;
 import java.util.HashMap;
@@ -145,6 +145,37 @@ public class HXService {
             response.responseBody = HXUtils.optFromJson(stringHXResponse.responseBody, HXTransactionBody.class);
         }
         return response;
+    }
+
+    public HXResponse<File> getFile(String address, HXFileInfo fileInfo, File downloadFile) throws SignatureException, IOException {
+        String path = "/files/" + fileInfo.getH() + "/" + fileInfo.getS();
+        HashMap<String, String> headers = new HashMap<>();
+        HXJwtBuildMaterial material = new HXJwtBuildMaterial()
+                .setAddress(address)
+                .setBody(null)
+                .setExpiredTime(DEFAULT_EXPIRED_TIME)
+                .setRequestMethod("GET")
+                .setUrl(path);
+        String jwtString = HXUtils.buildJwtString(wallet, material);
+        headers.put("Authorization", "Bearer " + jwtString);
+        HXResponse<String> stringHXResponse = httpClient.get(path, headers, null);
+        HXResponse<File> fileResponse = new HXResponse<>();
+        fileResponse.httpCode = stringHXResponse.httpCode;
+        fileResponse.originError = stringHXResponse.originError;
+        if (stringHXResponse.responseBody != null && stringHXResponse.responseBody.length() != 0) {
+            byte[] bytes = stringHXResponse.responseBody.getBytes();
+            FileOutputStream outputStream = new FileOutputStream(downloadFile);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = inputStream.read(buffer, 0, 1024)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.close();
+            inputStream.close();
+            fileResponse.responseBody = downloadFile;
+        }
+        return fileResponse;
     }
 
     public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException {

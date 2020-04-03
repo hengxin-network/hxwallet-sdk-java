@@ -5,7 +5,6 @@ import xin.heng.service.dto.HXResponse;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PublicKey;
 import java.util.Optional;
 
 public class TestUtil {
@@ -42,7 +41,7 @@ public class TestUtil {
     static String opponentAddress = "HX19vwbnbazqbynReuZfywqLRN7XqVWDwCp4MDDLhjWarWCJ7ic3Lnnm8uLLvXSHJSvtEwywq9Qobn9X8rD6VX73AHMJZFNnmHhhcWQbA69kgtqyrixmSAndwX8RL9tu1HSk7SGwDcRzqcvJWXuwids9p3osiHYFDnirhHW5P6qHBDbfbUnQAmSwqDjg7Sm5oExqH22eEfHNEjzgsCUkfVFbMU6";
 
     // test环境 height 174 的文件
-    static String testFileInfos = "[{\"dp\":0,\"h\":\"327e70426a2618b8fe49c5f9e636fb6f407694685e6f8b268f0c3db744cbb411\",\"rh\":\"3cae0216c88bbeb79dbf61b9668e78ba24b5904156738071d674ddb6a1418222\",\"s\":39312}]";
+    static String testFileInfos = "[{\"dp\":0,\"h\":\"a33799cd1f4647b94845ba5cf765f4d2b4e79f0808afd867d6210ba915a95ecb\",\"rh\":\"faa45a10986724bd36cc3cd8ba77ea59016a63484154fbd300060d3439005a51\",\"s\":48}]";
 
     public static void printResult(HXResponse response) {
         System.out.println(response.httpCode);
