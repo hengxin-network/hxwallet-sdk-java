@@ -1,6 +1,7 @@
 ### 2020.4.3
 * 增加了文件下载getFile
 * 修复jwt生成校验逻辑里的一个bug
+* 增加了根据id查询snapshot的api
 
 
 
