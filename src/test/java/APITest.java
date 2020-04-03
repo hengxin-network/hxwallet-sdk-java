@@ -115,8 +115,8 @@ public class APITest {
         File resultFile = fileHXResponse.responseBody;
 
         // snapshot
-        long snapshotId = 278;
-        HXResponse<HXSnapshot> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+        long snapshotId = 302;
+        HXResponse<HXSnapshotsBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
         TestUtil.printResult(snapshotResponse);
     }
 
