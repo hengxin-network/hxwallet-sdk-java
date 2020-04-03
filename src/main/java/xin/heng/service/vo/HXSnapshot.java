@@ -3,6 +3,7 @@ package xin.heng.service.vo;
 import java.util.List;
 
 public class HXSnapshot {
+    long id;
     String created_at;
     String asset;
     String user_id;
@@ -12,6 +13,15 @@ public class HXSnapshot {
     HXPubData pub_data;
     List<HXFileInfo> files;
     long height;
+
+    public long getId() {
+        return id;
+    }
+
+    public HXSnapshot setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public String getCreated_at() {
         return created_at;

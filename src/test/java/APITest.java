@@ -8,7 +8,6 @@ import xin.heng.service.dto.*;
 import xin.heng.service.vo.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -104,14 +103,21 @@ public class APITest {
         HXResponse<HXResponseBody<HXTransaction>> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
         TestUtil.printResult(fileResponse);
 
-// 从链上获取并下载文件保存到本地
+        // 从链上获取并下载文件保存到本地
         File downloadFile = new File("./download/test_" + System.currentTimeMillis() + ".txt");
-        if (!downloadFile.exists()){
+        if (!downloadFile.exists()) {
             File parent = new File(downloadFile.getParent());
             if (!parent.exists()) parent.mkdirs();
             downloadFile.createNewFile();
         }
         HXResponse<File> fileHXResponse = api.getFile(TestUtil.userAddress, fileInfos.get(0), downloadFile);
+        // 文件已经被下载到了downloadFile所对应文件，或者可以也通过response里的responseBody获取到file对象
+        File resultFile = fileHXResponse.responseBody;
+
+        // snapshot
+        long snapshotId = 278;
+        HXResponse<HXSnapshot> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+        TestUtil.printResult(snapshotResponse);
     }
 
 }
