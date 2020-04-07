@@ -7,7 +7,6 @@ import xin.heng.service.dto.HXResponse;
 import xin.heng.service.dto.HXSnapshotRequest;
 import xin.heng.service.dto.HXSnapshotsBody;
 
-import java.net.MalformedURLException;
 import java.security.SignatureException;
 
 public class GetSnapshotsSample {

@@ -1,16 +1,14 @@
 package xin.heng.sample.business;
 
-import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.sample.FastJsonParser;
 import xin.heng.service.HXService;
 import xin.heng.service.dto.HXResponse;
-import xin.heng.service.dto.HXResponseBody;
+import xin.heng.service.dto.HXSnapshotBody;
 import xin.heng.service.dto.HXTransactionRequest;
 import xin.heng.service.vo.HXFileHolder;
-import xin.heng.service.vo.HXTransaction;
-import xin.heng.service.vo.HXTransactionMemo;
+import xin.heng.service.vo.HXPubData;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,19 +19,19 @@ import java.util.UUID;
 
 public class PostTransactionSample {
 
-    public static HXResponse<HXResponseBody<HXTransaction>> postTransaction(HXService service, String userAddress, String opponentAddress, String asset) {
-        HXTransactionMemo memo = new HXTransactionMemo()
+    public static HXResponse<HXSnapshotBody> postTransaction(HXService service, String userAddress, String opponentAddress, String asset) {
+        HXPubData memo = new HXPubData()
                 .setT("the type") // t -> type
                 .setD("the data") // d -> data
                 .setH(HXWallet.getInstance().digestBySM3("the data")); // h -> hash
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
-                .setMemo(memo) // memo为HXTransactionMemo 根据不同业务要传入不同的参数
+                .setPub_data(memo) // memo为HXTransactionMemo 根据不同业务要传入不同的参数
                 .setOpponent_addresses(Arrays.asList(opponentAddress)) // opponent_addresses为相关address的列表
                 .setTrace_id(UUID.randomUUID().toString()); // trace_id
         try {
-            HXResponse<HXResponseBody<HXTransaction>> response = service.postTransactions(userAddress, request,null);
+            HXResponse<HXSnapshotBody> response = service.postTransactions(userAddress, request, null);
             System.out.println("Http Status Code: " + response.httpCode);
             if (response.isSuccess()) {
                 System.out.println("getInfo result: " + HXUtils.optToJson(response.responseBody));
@@ -59,16 +57,18 @@ public class PostTransactionSample {
         return null;
     }
 
+//    public static HXResponseBody<>
 
-    public static HXResponse<HXResponseBody<HXTransaction>> postTransactionWithFile(HXService service, String userAddress, String opponentAddress, String asset) {
-        HXTransactionMemo memo = new HXTransactionMemo()
+
+    public static HXResponse<HXSnapshotBody> postTransactionWithFile(HXService service, String userAddress, String opponentAddress, String asset) {
+        HXPubData memo = new HXPubData()
                 .setT("test-fileupload-type") // t -> type
                 .setD("test-fileData-hxwalletJar") // d -> data
                 .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar")); // h -> hash
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
-                .setMemo(memo) // memo为HXTransactionMemo 根据不同业务要传入不同的参数
+                .setPub_data(memo) // memo为HXTransactionMemo 根据不同业务要传入不同的参数
                 .setOpponent_addresses(Arrays.asList(opponentAddress)) // opponent_addresses为相关address的列表
                 .setTrace_id(UUID.randomUUID().toString()); // trace_id
 
@@ -78,7 +78,7 @@ public class PostTransactionSample {
                 .setUploadName("hxwallet.jar");
 
         try {
-            HXResponse<HXResponseBody<HXTransaction>> response = service.postTransactions(userAddress, request, fileHolder);
+            HXResponse<HXSnapshotBody> response = service.postTransactions(userAddress, request, fileHolder);
             System.out.println("Http Status Code: " + response.httpCode);
             if (response.isSuccess()) {
                 System.out.println("getInfo result: " + HXUtils.optToJson(response.responseBody));

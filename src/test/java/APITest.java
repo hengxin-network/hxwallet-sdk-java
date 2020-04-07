@@ -83,7 +83,8 @@ public class APITest {
                 .setFiles(fileInfos)
                 .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress, TestUtil.userAddress))
                 .setTrace_id(UUID.randomUUID().toString());
-        xin.heng.service.dto.HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+        HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+
         System.out.println("POST /transaction/ 给文件追加一个新的address的访问权限");
         TestUtil.printResult(updateFilesResponse);
 

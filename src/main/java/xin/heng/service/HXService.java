@@ -17,11 +17,11 @@ import java.util.HashMap;
 
 public class HXService {
 
-    private HXWallet wallet;
-    private IHXHttpClient httpClient;
+    protected HXWallet wallet;
+    protected IHXHttpClient httpClient;
 
     private static long DEFAULT_EXPIRED_TIME = 7200L;
-    private long expiredTime = DEFAULT_EXPIRED_TIME;
+    protected long expiredTime = DEFAULT_EXPIRED_TIME;
 
     public HXService() {
         wallet = HXWallet.getInstance();

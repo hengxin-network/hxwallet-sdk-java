@@ -1,9 +1,6 @@
 package xin.heng.sample.crypto;
 
-import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXWallet;
-
-import java.util.Arrays;
 
 public class SM3Sample {
     public static String digest(String message) {
