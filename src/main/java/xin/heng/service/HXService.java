@@ -3,7 +3,10 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.*;
+import xin.heng.service.vo.HXBaseUrl;
+import xin.heng.service.vo.HXFileHolder;
+import xin.heng.service.vo.HXFileInfo;
+import xin.heng.service.vo.HXJwtBuildMaterial;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -106,7 +109,7 @@ public class HXService {
         return response;
     }
 
-    public HXResponse<HXResponseBody<HXTransaction>> postTransactions(String address, HXTransactionRequest requestMap, HXFileHolder file) throws SignatureException, IOException {
+    public HXResponse<HXSnapshotBody> postTransactions(String address, HXTransactionRequest requestMap, HXFileHolder file) throws SignatureException, IOException {
         HashMap<String, String> headers = new HashMap<>();
         HashMap<String, Object> bodyMap = new HashMap<>();
         HXJwtBuildMaterial jwtMaterial = new HXJwtBuildMaterial();
@@ -138,11 +141,11 @@ public class HXService {
         headers.put("Authorization", "Bearer " + jwtToken);
 
         HXResponse<String> stringHXResponse = httpClient.post("/transactions", null, headers, bytesBody);
-        HXResponse<HXResponseBody<HXTransaction>> response = new HXResponse<>();
+        HXResponse<HXSnapshotBody> response = new HXResponse<>();
         response.httpCode = stringHXResponse.httpCode;
         response.originError = stringHXResponse.originError;
         if (stringHXResponse.responseBody != null && stringHXResponse.responseBody.length() != 0) {
-            response.responseBody = HXUtils.optFromJson(stringHXResponse.responseBody, HXTransactionBody.class);
+            response.responseBody = HXUtils.optFromJson(stringHXResponse.responseBody, HXSnapshotBody.class);
         }
         return response;
     }
@@ -178,24 +181,24 @@ public class HXService {
         return fileResponse;
     }
 
-    public HXResponse<HXSnapshotsBody> getSnapshot(String address, long snapshot_id) throws SignatureException {
+    public HXResponse<HXSnapshotBody> getSnapshot(String address, long snapshot_id) throws SignatureException {
         String path = "/snapshots/" + snapshot_id;
-        HashMap<String,String> headers = new HashMap<>();
+        HashMap<String, String> headers = new HashMap<>();
         HXJwtBuildMaterial jwtBuildMaterial = new HXJwtBuildMaterial()
                 .setExpiredTime(DEFAULT_EXPIRED_TIME)
                 .setAddress(address)
                 .setUrl(path)
                 .setBody(null)
                 .setRequestMethod("GET");
-        String jwt = HXUtils.buildJwtString(wallet,jwtBuildMaterial);
+        String jwt = HXUtils.buildJwtString(wallet, jwtBuildMaterial);
         headers.put("Authorization", "Bearer " + jwt);
         headers.put("Content-Type", "application/json;charset=utf-8");
         HXResponse<String> stringResponse = httpClient.get(path, headers, null);
-        HXResponse<HXSnapshotsBody> snapshotResponse = new HXResponse<>();
+        HXResponse<HXSnapshotBody> snapshotResponse = new HXResponse<>();
         snapshotResponse.httpCode = stringResponse.httpCode;
         snapshotResponse.originError = stringResponse.originError;
         if (stringResponse.responseBody != null && stringResponse.responseBody.length() != 0) {
-            snapshotResponse.responseBody = HXUtils.optFromJson(stringResponse.responseBody, HXSnapshotsBody.class);
+            snapshotResponse.responseBody = HXUtils.optFromJson(stringResponse.responseBody, HXSnapshotBody.class);
         }
         return snapshotResponse;
     }

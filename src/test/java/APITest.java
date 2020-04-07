@@ -5,7 +5,10 @@ import xin.heng.service.HXDefaultHttpClient;
 import xin.heng.service.HXService;
 import xin.heng.service.IHXHttpClient;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.*;
+import xin.heng.service.vo.HXBaseUrl;
+import xin.heng.service.vo.HXFileHolder;
+import xin.heng.service.vo.HXFileInfo;
+import xin.heng.service.vo.HXPubData;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +66,7 @@ public class APITest {
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
 
                 .setTrace_id(UUID.randomUUID().toString());
-        HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
+        HXResponse<HXSnapshotBody> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
         TestUtil.printResult(HXResponse);
 
         // postTransaction 给新的Address附加权限
@@ -80,7 +83,8 @@ public class APITest {
                 .setFiles(fileInfos)
                 .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress, TestUtil.userAddress))
                 .setTrace_id(UUID.randomUUID().toString());
-        HXResponse<HXResponseBody<HXTransaction>> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+        xin.heng.service.dto.HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+        System.out.println("POST /transaction/ 给文件追加一个新的address的访问权限");
         TestUtil.printResult(updateFilesResponse);
 
         // postTransaction 上传数据并附带文件
@@ -100,7 +104,8 @@ public class APITest {
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
 
-        HXResponse<HXResponseBody<HXTransaction>> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
+        xin.heng.service.dto.HXResponse<HXSnapshotBody> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
+        System.out.println("POST /transaction/ 上传文件");
         TestUtil.printResult(fileResponse);
 
         // 从链上获取并下载文件保存到本地
@@ -116,7 +121,8 @@ public class APITest {
 
         // snapshot
         long snapshotId = 302;
-        HXResponse<HXSnapshotsBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+        xin.heng.service.dto.HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+        System.out.println("GET /snapshots/" + snapshotId);
         TestUtil.printResult(snapshotResponse);
     }
 
