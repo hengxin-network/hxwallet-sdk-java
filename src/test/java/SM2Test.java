@@ -1,4 +1,5 @@
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXWallet;
 import xin.heng.crypto.HXDefaultKeyFactory;
 
@@ -15,17 +16,20 @@ public class SM2Test {
         HXWallet.getInstance().initDefaultInjects();
         HXWallet.getInstance().injectSM2Engine(new HXDefaultSM2Engine());
         try {
-            String encoded = TestUtil.pemTestKey;
+            String encoded = TestUtil.testPrivateKey;
             encoded = encoded.replace("-----BEGIN PRIVATE KEY-----", "");
             encoded = encoded.replace("-----END PRIVATE KEY-----", "");
             byte[] decode = Base64.getMimeDecoder().decode(encoded);
             PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(decode);
 
-            String publicEncoded = TestUtil.testPublicKey;
-            publicEncoded = publicEncoded.replace("-----BEGIN PUBLIC KEY-----", "");
-            publicEncoded = publicEncoded.replace("-----END PUBLIC KEY-----", "");
-            byte[] publicDecode = Base64.getMimeDecoder().decode(publicEncoded);
-            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicDecode);
+//            String publicEncoded = TestUtil.testPublicKey;
+//            publicEncoded = publicEncoded.replace("-----BEGIN PUBLIC KEY-----", "");
+//            publicEncoded = publicEncoded.replace("-----END PUBLIC KEY-----", "");
+//            byte[] publicDecode = Base64.getMimeDecoder().decode(publicEncoded);
+//            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicDecode);
+
+            byte[] decodePublicKey = HXWallet.getInstance().decodeAddress(TestUtil.testAddress);
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(decodePublicKey);
 
             HXDefaultKeyFactory keyFactory = new HXDefaultKeyFactory();
             keyFactory.injectDefault();
@@ -37,8 +41,9 @@ public class SM2Test {
             System.out.println("Encrypt data Base64: " + encryptData);
 
             HXWallet.getInstance().setSM2EnginePrivateKey(privateKey);
-            String decryptData = HXWallet.getInstance().decryptBySM2(encryptData);
-            System.out.println("Decrypt data: " + decryptData);
+            String decryptData = HXWallet.getInstance().decryptBySM2(TestUtil.testData);
+            byte[] dataBytes = decryptData.getBytes();
+            System.out.println("Decrypt data: " + Base64.getMimeEncoder().encodeToString(dataBytes));
 
             HXWallet.getInstance().injectSM2Engine(new HXDefaultSM2Engine());
             HXWallet.getInstance().setSM2PrivateKey(TestUtil.pemTestKey);

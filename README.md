@@ -287,30 +287,48 @@ jwt中，会对请求的method url body进行签名，工具类提供了两个�
     HXResponse<HXSnapshotsBody> response = service.getSnapshots(userAddress, new HXSnapshotRequest())
 ```
 
-3. postTransaction 提交一条记录上链
-
-TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上传文件附件时
-参数以multipart/form-data的形式上传,包含asset, opponent_addresses, trace_id, memo
-
-- trace_id: 防重放攻击使用,一般使用UUID
-- memo: 链上记录数据，为TransactionMemo
-- opponent_addresses: 是一个包含了相关address的列表
+3. getSnapshot 查询单条snapshot记录
+根据address和snapshot_id查询记录，id以RESTful标准中的path param的形式附带在uri上
+```java
+    public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException 
+```
 
 ```java
-    HXTransactionMemo memo = new HXTransactionMemo()
-                    .setT("test-type")  // t : type
-                    .setD("test-data")  // d : data
-                    .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-data".getBytes()))); // h : hash
+    long snapshotId = 302;
+    HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+```
+
+4. postTransaction 提交一条记录上链
+
+TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上传文件附件时
+参数以multipart/form-data的形式上传,包含asset, opponent_addresses, trace_id, pub_data
+
+- trace_id: 防重放攻击使用,一般使用UUID
+- pub_data: 链上记录数据，为HXPubData
+- opponent_addresses: 是一个包含了相关address的列表
+- file: 选填，为HXFileHolder，上传文件时附带
+- files: 选填，为List<HXFileInfo>, 是从Snapshot中获取到的已存在的文件信息，需要更新权限时附带
+
+```java
+    HXPubData pubData = new HXPubData()
+              .setT("test-type")  // t : type
+              .setD("test-data")  // d : data
+              .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-data".getBytes()))); // h : hash
     
     HXTransactionRequest requestMap = new HXTransactionRequest()
                     .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
-                    .setMemo(memo)
+                    .setPub_data(pubData)
                     .setOpponent_addresses(Collections.singletonList(opponentAddress))
                     .setTrace_id(UUID.randomUUID().toString());
     HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(userAddress, requestMap);
    
-    File file;// file为要上传的文件
-    HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(userAddress, requestMap, file);       
-
+    
 ```
 
+5. getFile 从链上获取文件
+
+
+
+```java
+    public HXResponse<File> getFile(String address, HXFileInfo fileInfo, File downloadFile) throws SignatureException, IOException 
+```

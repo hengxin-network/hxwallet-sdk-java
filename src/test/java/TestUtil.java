@@ -31,6 +31,19 @@ public class TestUtil {
             "0DU4/3W5\n" +
             "-----END PRIVATE KEY-----";
 
+    public static String testData = "BH8awtJVUokVfB3qeHlef5CsLpSd8RjTZd5LI66XbOBEFUB/OWUCv5BBdbG6PowjQHXD3E16uo8zZWKzaqYswhq3Qt7TUfOj4R+MeZUdi2ucl4AWyjVYam883rM4OUxiXx1ys2a0m1RImYAW/4bJcu8=";
+    public static String tpk = "HX2StGQezPPPRueENiWDywyjx8NQ4TiRFgSjL5v1ZBboCjAnKHrFEQWT7bkdA4G2L1qQmw5n7NjB1PJEwTB4vy6gkrjWcbJQL5Zyvu5F2oJs4sK4E57AEPnmZMbxyoWDjrZSrBnVgiAUXPVA64KH2vX99zWqhEPKNCeTATRXf5D3UzNkeZwawiNtfcURMcQBBER9hCH2B31kxDKoP8DvNZEqi3uB";
+    public static String testAddress = "HX2KqH7yJKHFcX9zt4e3uRDoxE7jj3Gm1ksPxkJLwe2RDPnHGxL676Zw8oLJRutWJffXWZE7SUGucdusYSfCt3T9rTNyx21kAVXDrR1xDDB66RT8xBFypqwAbJMTUGWQ5CjNuFDwzpmrpqmqRLrSXrtH5EEUVB78yRmvbkY8dbcew75CWFkP7pz3ocBxNYG4veZzoSLAohAaptd9m3cj924qnwr7";
+    public static String testAddressPK  = "-----BEGIN PUBLIC KEY-----\n" +
+            "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEkR5CsqJXaj5Bwh3s6X9MG8PxudaZ\n" +
+            "nJo86A9QfFHMHQ1OnUrP2siRuQpTzSQkhAi1Fh5DBAITg+m3YZbM4/CbRw==\n" +
+            "-----END PUBLIC KEY-----";
+
+    public static String testPrivateKey = "MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgCpqUlh6/gV6UCMzS\n" +
+            "AlE5NDcSlwgtes63Rjuy6aHmkrigCgYIKoEcz1UBgi2hRANCAASk0+Lxu4auOzBc\n" +
+            "NEji+J1ZNAYRpdftmeWhESh/REr9PsckVOWRoFBAqgHUnZGTxzCO1WRyTV1qMnRJ\n" +
+            "CwlQSebd\n";
+
     public static String testPublicKey = "-----BEGIN PUBLIC KEY-----\n" +
             "    MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEeDZqNmfR9KZ4Q6wNXFNUBWO7sybV\n" +
             "    N/8MWbyAhFIb3BPSOATFgWQHmEPVr7VYk1OL8fdLD2nfWGc0gtA1OP91uQ==\n" +

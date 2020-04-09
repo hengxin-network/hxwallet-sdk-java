@@ -1,12 +1,14 @@
 package xin.heng;
 
 import xin.heng.crypto.*;
+import xin.heng.service.error.InvalidAddressException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class HXWallet {
@@ -136,9 +138,17 @@ public class HXWallet {
         return Base64.getMimeEncoder().encodeToString(encrypt);
     }
 
+    public byte[] encryptBySM2(byte[] rawData, PublicKey publicKey) {
+        return sm2Engine.encrypt(rawData, publicKey);
+    }
+
     public String decryptBySM2(String encryptData) {
         byte[] decode = Base64.getMimeDecoder().decode(encryptData);
         return new String(sm2Engine.decrypt(decode));
+    }
+
+    public byte[] decryptBySM2(byte[] encryptData) {
+        return sm2Engine.decrypt(encryptData);
     }
 
     public String encryptBySM4(String rawData) throws BadPaddingException, IllegalBlockSizeException {
@@ -146,9 +156,17 @@ public class HXWallet {
         return Base64.getMimeEncoder().encodeToString(encrypt);
     }
 
+    public byte[] encryptBySM4(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException {
+        return sm4.encrypt(rawData);
+    }
+
     public String decryptBySM4(String encryptData) throws BadPaddingException, IllegalBlockSizeException {
         byte[] decode = Base64.getMimeDecoder().decode(encryptData);
         return new String(sm4.decrypt(decode));
+    }
+
+    public byte[] decryptBySM4(byte[] encryptData) throws BadPaddingException, IllegalBlockSizeException {
+        return sm4.decrypt(encryptData);
     }
 
     public String signBySM2(String rawData) throws SignatureException {
@@ -156,9 +174,17 @@ public class HXWallet {
         return Base64.getMimeEncoder().encodeToString(sign);
     }
 
+    public byte[] signBySM2(byte[] rawData) throws SignatureException {
+        return sm2Signer.sign(rawData);
+    }
+
     public boolean verifyBySM2(String rawData, String signature) throws SignatureException {
         byte[] decode = Base64.getMimeDecoder().decode(signature);
         return sm2Signer.verify(rawData.getBytes(), decode);
+    }
+
+    public boolean verifyBySM2(byte[] rawData, byte[] signature) throws SignatureException {
+        return sm2Signer.verify(rawData, signature);
     }
 
     public String digestBySM3(String message) {
@@ -166,15 +192,24 @@ public class HXWallet {
         return Base64.getMimeEncoder().encodeToString(digest);
     }
 
+    public byte[] digestBySM3(byte[] message) {
+        return sm3.digest(message);
+    }
+
     public SecretKey generateSM4Key() {
         return sm4.generateKey();
     }
 
-    byte[] signBySM2(byte[] rawData) throws SignatureException {
-        return sm2Signer.sign(rawData);
-    }
-
-    public byte[] digestBySM3(byte[] message) {
-        return sm3.digest(message);
+    public byte[] decodeAddress(String rawAddress) throws InvalidAddressException {
+        String address = rawAddress;
+        if (address.startsWith("HX")) {
+            address = address.substring(2);
+        }
+        byte[] decode = Base58.decodeChecked(address);
+        if (decode.length != 155) {
+            throw new InvalidAddressException("not a valid address, public key length not correct.");
+        }
+        byte[] publicKey = Arrays.copyOfRange(decode, 64, decode.length);
+        return publicKey;
     }
 }

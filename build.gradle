@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'xin.heng'
-version '1.0.0'
+version '1.0.1'
 
 sourceCompatibility = 1.8
 
@@ -15,7 +15,7 @@ jar {
         }
         copy {
             from getArchiveFile().get().asFile
-            rename(getArchiveFile().get().asFile.getName(), "hxwallet.jar")
+            rename(getArchiveFile().get().asFile.getName(), "hxwallet"+ version +".jar")
             into "../sample/src/main/lib/"
         }
         println getArchiveFile().get().asFile.canonicalPath

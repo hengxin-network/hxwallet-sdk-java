@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSON;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
@@ -74,7 +75,7 @@ public class APITest {
         if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
             fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
         } else {
-            fileInfos = HXUtils.optFromJson(TestUtil.testFileInfos, HXFileInfoList.class);
+            fileInfos = JSON.parseArray(TestUtil.testFileInfos, HXFileInfo.class);
         }
 
         HXTransactionRequest updateFilesRequest = new HXTransactionRequest()
@@ -83,9 +84,8 @@ public class APITest {
                 .setFiles(fileInfos)
                 .setOpponent_addresses(Arrays.asList(TestUtil.opponentAddress, TestUtil.userAddress))
                 .setTrace_id(UUID.randomUUID().toString());
-        HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
-
         System.out.println("POST /transaction/ 给文件追加一个新的address的访问权限");
+        HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
         TestUtil.printResult(updateFilesResponse);
 
         // postTransaction 上传数据并附带文件

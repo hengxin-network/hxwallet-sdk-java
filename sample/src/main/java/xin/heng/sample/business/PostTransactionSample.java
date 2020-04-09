@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 public class PostTransactionSample {
@@ -68,8 +69,8 @@ public class PostTransactionSample {
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
-                .setPub_data(memo) // memo为HXTransactionMemo 根据不同业务要传入不同的参数
-                .setOpponent_addresses(Arrays.asList(opponentAddress)) // opponent_addresses为相关address的列表
+                .setPub_data(memo) // memo为HXPubData 根据不同业务要传入不同的参数
+                .setOpponent_addresses(Collections.singletonList(opponentAddress)) // opponent_addresses为相关address的列表
                 .setTrace_id(UUID.randomUUID().toString()); // trace_id
 
         File file = new File("./src/main/lib/hxwallet.jar");

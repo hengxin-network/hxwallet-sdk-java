@@ -80,8 +80,9 @@ public class WalletSample {
         System.out.println("sm4raw string:  " + sm4RawData);
 
         // 生成 jwt
+        System.out.println("==========JWT==========");
         HXJwt jwt = JWTTokenSample.generate(SampleUtils.userAddress);
-
+        System.out.println("==========JWT==========");
         // 需要指定注入定制的wallet和client时
         // HXDefaultHttpClient client = new HXDefaultHttpClient();
         // HXService service = new HXService(wallet,client);
@@ -92,13 +93,20 @@ public class WalletSample {
         service.setBaseUrl(new HXBaseUrl("http", "106.14.59.4", 8930));
 
         // getInfo 接口，具体调用查看 GetInfoSample 内
+        System.out.println("==========getInfo==========");
         GetInfoSample.getInfo(service, SampleUtils.userAddress);
+        System.out.println("==========getInfo==========");
 
         // getSnapshots 接口，具体调用查看 GetSnapshotsSample 内
+        System.out.println("==========getSnapshot==========");
         GetSnapshotsSample.getSnapshots(service, SampleUtils.userAddress);
+        System.out.println("==========getSnapshot==========");
 
         // postTransaction 接口，具体调用查看 PostTransactionSample 内
+        System.out.println("==========postTransaction==========");
         PostTransactionSample.postTransaction(service, SampleUtils.userAddress, SampleUtils.opponentAddress, SampleUtils.testAsset);
         PostTransactionSample.postTransactionWithFile(service, SampleUtils.userAddress, SampleUtils.opponentAddress, SampleUtils.testAsset);
+        System.out.println("==========postTransaction==========");
+
     }
 }
