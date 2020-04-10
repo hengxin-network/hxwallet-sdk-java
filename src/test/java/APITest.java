@@ -96,8 +96,7 @@ public class APITest {
 
         HXPubData filePubData = new HXPubData()
                 .setT("test-fileupload-type")
-                .setD("test-fileData-testfile")
-                .setH(HXWallet.getInstance().digestBySM3("test-fileData-testfile"));
+                .setD("test-fileData-testfile");
 
         HXTransactionRequest fileRequestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
