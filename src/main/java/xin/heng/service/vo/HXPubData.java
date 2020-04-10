@@ -3,13 +3,12 @@ package xin.heng.service.vo;
 public class HXPubData<T> {
     private String t; // type
     private T d; // data
-    private String h; // hash
 
     public String getT() {
         return t;
     }
 
-    public HXPubData setT(String t) {
+    public HXPubData<T> setT(String t) {
         this.t = t;
         return this;
     }
@@ -18,17 +17,9 @@ public class HXPubData<T> {
         return d;
     }
 
-    public HXPubData setD(T d) {
+    public HXPubData<T> setD(T d) {
         this.d = d;
         return this;
     }
 
-    public String getH() {
-        return h;
-    }
-
-    public HXPubData setH(String h) {
-        this.h = h;
-        return this;
-    }
 }

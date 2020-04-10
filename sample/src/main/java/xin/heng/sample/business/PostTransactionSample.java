@@ -8,6 +8,7 @@ import xin.heng.service.dto.HXResponse;
 import xin.heng.service.dto.HXSnapshotBody;
 import xin.heng.service.dto.HXTransactionRequest;
 import xin.heng.service.vo.HXFileHolder;
+import xin.heng.service.vo.HXFileInfo;
 import xin.heng.service.vo.HXPubData;
 
 import java.io.File;
@@ -21,10 +22,9 @@ import java.util.UUID;
 public class PostTransactionSample {
 
     public static HXResponse<HXSnapshotBody> postTransaction(HXService service, String userAddress, String opponentAddress, String asset) {
-        HXPubData memo = new HXPubData()
+        HXPubData<HXFileInfo> memo = new HXPubData<HXFileInfo>()
                 .setT("the type") // t -> type
-                .setD("the data") // d -> data
-                .setH(HXWallet.getInstance().digestBySM3("the data")); // h -> hash
+                .setD(new HXFileInfo()); // d -> data
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
@@ -62,10 +62,9 @@ public class PostTransactionSample {
 
 
     public static HXResponse<HXSnapshotBody> postTransactionWithFile(HXService service, String userAddress, String opponentAddress, String asset) {
-        HXPubData memo = new HXPubData()
+        HXPubData<HXFileInfo> memo = new HXPubData<HXFileInfo>()
                 .setT("test-fileupload-type") // t -> type
-                .setD("test-fileData-hxwalletJar") // d -> data
-                .setH(HXWallet.getInstance().digestBySM3("test-fileData-hxwalletJar")); // h -> hash
+                .setD(new HXFileInfo()); // d -> data
 
         HXTransactionRequest request = new HXTransactionRequest()
                 .setAsset(asset) // asset
