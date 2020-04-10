@@ -1,4 +1,5 @@
 import com.alibaba.fastjson.JSON;
+import kotlin.random.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
@@ -58,8 +59,7 @@ public class APITest {
         // postTransaction 只上传数据，不附带文件
         HXPubData pubData = new HXPubData()
                 .setT("test-type")
-                .setD("test-data")
-                .setH(HXWallet.getInstance().digestBySM3("test-data"));
+                .setD(new TestCard().setName("test-card").setNumber(String.valueOf(Random.Default.nextInt())));
 
         HXTransactionRequest requestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
@@ -126,5 +126,6 @@ public class APITest {
         System.out.println("GET /snapshots/" + snapshotId);
         TestUtil.printResult(snapshotResponse);
     }
+
 
 }

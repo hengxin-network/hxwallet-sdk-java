@@ -1,8 +1,8 @@
 package xin.heng.service.vo;
 
-public class HXPubData {
+public class HXPubData<T> {
     private String t; // type
-    private String d; // data
+    private T d; // data
     private String h; // hash
 
     public String getT() {
@@ -14,11 +14,11 @@ public class HXPubData {
         return this;
     }
 
-    public String getD() {
+    public T getD() {
         return d;
     }
 
-    public HXPubData setD(String d) {
+    public HXPubData setD(T d) {
         this.d = d;
         return this;
     }

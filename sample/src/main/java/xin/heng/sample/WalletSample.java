@@ -90,6 +90,7 @@ public class WalletSample {
         // 而service不需要指定传入的wallet时
         // HXService会默认使用 HengxinWallet.getInstance() 的单例实例
         HXService service = new HXService();
+
         service.setBaseUrl(new HXBaseUrl("http", "106.14.59.4", 8930));
 
         // getInfo 接口，具体调用查看 GetInfoSample 内

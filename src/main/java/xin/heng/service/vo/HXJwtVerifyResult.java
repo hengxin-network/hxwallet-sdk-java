@@ -20,7 +20,8 @@ public class HXJwtVerifyResult {
         this.code = code;
     }
 
-    public HXJwtVerifyResult(boolean passed, int code, String message) {
+    public HXJwtVerifyResult(HXJwt hxjwt, boolean passed, int code, String message) {
+        jwt = hxjwt;
         this.passed = passed;
         this.code = code;
         this.message = message;

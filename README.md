@@ -27,7 +27,7 @@
 
 ### 接入方法
 
-1. 引入jar包依赖 位置:[hxwallet-1.0.jar](sample/src/main/lib/hxwallet.jar)
+1. 引入jar包依赖 位置:[hxwallet-1.1.0.jar](sample/src/main/lib/hxwallet-1.1.0.jar)
 2. 使用钱包，需要注入必要的模块
 - 需要注入的有三个模块，分别是IHXSM2Engine,IHXSM2Signer和IHXSM3Digest
 - 其中IHXSM2Signer和IHXSM3Digest提供了基于BC库的默认注入实现，由于BC库SM2加解密的实现逻辑未使用Java Security标准API，SDK中不提供IHXSM2Engine的默认实现
@@ -312,8 +312,7 @@ TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上�
 ```java
     HXPubData pubData = new HXPubData()
               .setT("test-type")  // t : type
-              .setD("test-data")  // d : data
-              .setH(Hex.toHexString(HXWallet.getInstance().digestBySM3("test-data".getBytes()))); // h : hash
+              .setD(new TestCard().setName("test-card").setNumber(String.valueOf(Random.Default.nextInt())));// d - data
     
     HXTransactionRequest requestMap = new HXTransactionRequest()
                     .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
@@ -321,8 +320,6 @@ TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上�
                     .setOpponent_addresses(Collections.singletonList(opponentAddress))
                     .setTrace_id(UUID.randomUUID().toString());
     HXResponse<HXResponseBody<HXTransaction>> HXResponse = api.postTransactions(userAddress, requestMap);
-   
-    
 ```
 
 5. getFile 从链上获取文件

@@ -2,6 +2,7 @@ package xin.heng;
 
 import xin.heng.service.HXConstants;
 import xin.heng.service.IHXHttpClient;
+import xin.heng.service.error.InvalidAddressException;
 import xin.heng.service.error.JwtNotValidException;
 import xin.heng.service.vo.*;
 
@@ -12,7 +13,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -179,32 +182,56 @@ public class HXUtils {
     public static HXJwtVerifyResult verifyJwt(HXWallet wallet, HXJwtVerifyMaterial material) throws JwtNotValidException {
         String[] jwts = material.getRawJwtString().split("\\.");
         if (jwts.length != 3) {
-            return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_FORMAT, "jwt should be a 3-segment string, connected by dot(.)");
+            return new HXJwtVerifyResult(null, false, HXConstants.JwtVerifyCode.WRONG_FORMAT, "jwt should be a 3-segment string, connected by dot(.)");
         }
         String headerBase64 = jwts[0];
         String payloadBase64 = jwts[1];
         String signature = jwts[2];
         String headerRawString = new String(Base64.getUrlDecoder().decode(headerBase64));
         HXJwtHeader header = HXUtils.optFromJson(headerRawString, HXJwtHeader.class);
-        if (!"SM2".contentEquals(header.getAlg())) {
-            return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_ALGORITHM, "hengxin-network jwt algorithm should use SM2.");
-        }
-        if (!"JWT".contentEquals(header.getTyp())) {
-            return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_JWT_TYPE, "hengxin-network jwt type should use JWT.");
-        }
-
-        String preJwt = headerBase64 + "." + payloadBase64;
-        byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
-        try {
-            wallet.verifyBySM2(new String(jwtSM3Hash), Base64.getMimeEncoder().encodeToString(Base64.getUrlDecoder().decode(signature)));
-        } catch (SignatureException e) {
-            return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_SIGNATURE_NOT_VALID, "jwt signature not valid");
-        }
-
         String payloadRawString = new String(Base64.getUrlDecoder().decode(payloadBase64));
         HXJwtPayload payload = HXUtils.optFromJson(payloadRawString, HXJwtPayload.class);
+
+        HXJwt jwt = new HXJwt();
+        jwt.setRaw(material.getRawJwtString());
+        jwt.setHeader(header);
+        jwt.setPayload(payload);
+        jwt.setSignature(signature);
+
+        if (!"SM2".contentEquals(header.getAlg())) {
+            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_ALGORITHM, "hengxin-network jwt algorithm should use SM2.");
+        }
+        if (!"JWT".contentEquals(header.getTyp())) {
+            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_JWT_TYPE, "hengxin-network jwt type should use JWT.");
+        }
+        System.out.println();
+        System.out.println(signature);
+        String preJwt = headerBase64 + "." + payloadBase64;
+        byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
+
+        boolean verifyResult = false;
+        try {
+            byte[] address = wallet.decodeAddress(payload.getIss());
+            wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(address));
+            verifyResult = wallet.verifyBySM2(jwtSM3Hash, Base64.getUrlDecoder().decode(signature));
+        } catch (SignatureException e) {
+            verifyResult = false;
+        } catch (InvalidAddressException e) {
+            e.printStackTrace();
+            verifyResult = false;
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+            verifyResult = false;
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+            verifyResult = false;
+        }
+        if (!verifyResult) {
+            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_SIGNATURE_NOT_VALID, "jwt signature not valid");
+        }
+
         if (System.currentTimeMillis() > payload.getExp() * 1000) {
-            return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_EXPIRED, "jwt has expired");
+            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_EXPIRED, "jwt has expired");
         }
 
         if (material.isVerifySig()) {
@@ -218,15 +245,10 @@ public class HXUtils {
             }
             String digest = wallet.digestBySM3(new String(rawSig));
             if (!sig.contentEquals(digest)) {
-                return new HXJwtVerifyResult(false, HXConstants.JwtVerifyCode.WRONG_PAYLOAD_SIG_NOT_VALID, "jwt payload sig not valid.");
+                return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_PAYLOAD_SIG_NOT_VALID, "jwt payload sig not valid.");
             }
         }
 
-        HXJwt jwt = new HXJwt();
-        jwt.setRaw(material.getRawJwtString());
-        jwt.setHeader(header);
-        jwt.setPayload(payload);
-        jwt.setSignature(signature);
         return new HXJwtVerifyResult(jwt);
     }
 

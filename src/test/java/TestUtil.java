@@ -33,7 +33,7 @@ public class TestUtil {
 
     public static String testData = "BH8awtJVUokVfB3qeHlef5CsLpSd8RjTZd5LI66XbOBEFUB/OWUCv5BBdbG6PowjQHXD3E16uo8zZWKzaqYswhq3Qt7TUfOj4R+MeZUdi2ucl4AWyjVYam883rM4OUxiXx1ys2a0m1RImYAW/4bJcu8=";
     public static String tpk = "HX2StGQezPPPRueENiWDywyjx8NQ4TiRFgSjL5v1ZBboCjAnKHrFEQWT7bkdA4G2L1qQmw5n7NjB1PJEwTB4vy6gkrjWcbJQL5Zyvu5F2oJs4sK4E57AEPnmZMbxyoWDjrZSrBnVgiAUXPVA64KH2vX99zWqhEPKNCeTATRXf5D3UzNkeZwawiNtfcURMcQBBER9hCH2B31kxDKoP8DvNZEqi3uB";
-    public static String testAddress = "HX2KqH7yJKHFcX9zt4e3uRDoxE7jj3Gm1ksPxkJLwe2RDPnHGxL676Zw8oLJRutWJffXWZE7SUGucdusYSfCt3T9rTNyx21kAVXDrR1xDDB66RT8xBFypqwAbJMTUGWQ5CjNuFDwzpmrpqmqRLrSXrtH5EEUVB78yRmvbkY8dbcew75CWFkP7pz3ocBxNYG4veZzoSLAohAaptd9m3cj924qnwr7";
+    public static String testAddress = "HX9nwFa8rZyZxeJxPAtugKewStDoFn143KPkQXFtRpMKXevMwMfkadDctz8iCdc5YFdxn9ZakFdYnETHSESRdr4EGQ1Z9EqQpdf4Fth4Ef6aiPhBtqkUhQvJ1s98abpTgBTDkCbZW1YE9Gs4pisT7Yut47hwjgVvMLortBp8y135GFeHnyZivMNXVFgjmSJYtRyLwmN5zqvneZN1YhgRNg1A27q";
     public static String testAddressPK  = "-----BEGIN PUBLIC KEY-----\n" +
             "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEkR5CsqJXaj5Bwh3s6X9MG8PxudaZ\n" +
             "nJo86A9QfFHMHQ1OnUrP2siRuQpTzSQkhAi1Fh5DBAITg+m3YZbM4/CbRw==\n" +
@@ -49,9 +49,14 @@ public class TestUtil {
             "    N/8MWbyAhFIb3BPSOATFgWQHmEPVr7VYk1OL8fdLD2nfWGc0gtA1OP91uQ==\n" +
             "    -----END PUBLIC KEY-----";
 
+    public static String testPublicKey2 = "-----BEGIN PUBLIC KEY-----\n" +
+            "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAESVltMs5lwWWngmIDAUvKrtyNseXC\n" +
+            "3vZnq8KW8CU5e5I+dlvQLSoelABXIN2TBnjKvR76kKWwc5j5BtYYOkF9hA==\n" +
+            "-----END PUBLIC KEY-----";
+
     static String userAddress = "HX9nwFa8rZyZxeJxPAtugKewStDoFn143KPkQXFtRpMKXevMwMfkadDctz8iCdc5YFdxn9ZakFdYnETHSESRdr4EGQ1Z9EqQpdf4Fth4Ef6aiPhBtqkUhQvJ1s98abpTgBTDkCbZW1YE9Gs4pisT7Yut47hwjgVvMLortBp8y135GFeHnyZivMNXVFgjmSJYtRyLwmN5zqvneZN1YhgRNg1A27q";
 
-    static String opponentAddress = "HX19vwbnbazqbynReuZfywqLRN7XqVWDwCp4MDDLhjWarWCJ7ic3Lnnm8uLLvXSHJSvtEwywq9Qobn9X8rD6VX73AHMJZFNnmHhhcWQbA69kgtqyrixmSAndwX8RL9tu1HSk7SGwDcRzqcvJWXuwids9p3osiHYFDnirhHW5P6qHBDbfbUnQAmSwqDjg7Sm5oExqH22eEfHNEjzgsCUkfVFbMU6";
+    static String opponentAddress = "HX2DKYCAp2b36THYMKdVsM8KUEF7m92aF5MkTMWFN7ex7xttYusHRwy19kYGjZCPxYDezgZqPgpKLSFMMFtbAHFD41nEKZW9EPUQLZQe1uhp7bU4WC8PN4jvKe2jGdxd4KtdpxnmG8TJemCXqbgjPanQxL6BEJABFPBDERgPh6WvswpNdiZCDNMbTYVVAMv3izgHumSr622Gvz8xn82rRkYQaFFn";
 
     // test环境 height 174 的文件
     static String testFileInfos = "[{\"dp\":0,\"h\":\"a33799cd1f4647b94845ba5cf765f4d2b4e79f0808afd867d6210ba915a95ecb\",\"rh\":\"faa45a10986724bd36cc3cd8ba77ea59016a63484154fbd300060d3439005a51\",\"s\":48}]";
