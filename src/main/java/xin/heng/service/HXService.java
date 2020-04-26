@@ -117,6 +117,11 @@ public class HXService {
         bodyMap.put("opponent_addresses", requestMap.getOpponent_addresses());
         bodyMap.put("trace_id", requestMap.getTrace_id());
         bodyMap.put("pub_data", requestMap.getPub_data());
+        bodyMap.put("senders_required", requestMap.isSenders_required());
+        bodyMap.put("receivers_required", requestMap.isReceivers_required());
+        if (requestMap.getPriv_data() != null) {
+            bodyMap.put("priv_data", requestMap.getPriv_data());
+        }
         if (requestMap.getFiles() != null) {
             bodyMap.put("files", requestMap.getFiles());
         }

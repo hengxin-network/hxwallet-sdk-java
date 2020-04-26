@@ -9,6 +9,7 @@ public class HXSnapshotRequest {
     private String asset;
     private int from;
     private int limit = 20;
+    private boolean sig_required;
     private String order = ORDER_ASC;
 
     public HXSnapshotRequest setAsset(String asset) {
@@ -45,5 +46,14 @@ public class HXSnapshotRequest {
 
     public String getOrder() {
         return order;
+    }
+
+    public boolean isSig_required() {
+        return sig_required;
+    }
+
+    public HXSnapshotRequest setSig_required(boolean sig_required) {
+        this.sig_required = sig_required;
+        return this;
     }
 }

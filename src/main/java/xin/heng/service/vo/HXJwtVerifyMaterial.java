@@ -5,6 +5,7 @@ public class HXJwtVerifyMaterial {
     private String requestMethod;
     private String url;
     private byte[] body;
+    private boolean useIssuerToVerify;
     private boolean verifySig = true;
 
     public String getRawJwtString() {
@@ -49,6 +50,15 @@ public class HXJwtVerifyMaterial {
 
     public HXJwtVerifyMaterial setVerifySig(boolean verifySig) {
         this.verifySig = verifySig;
+        return this;
+    }
+
+    public boolean isUseIssuerToVerify() {
+        return useIssuerToVerify;
+    }
+
+    public HXJwtVerifyMaterial setUseIssuerToVerify(boolean useIssuerToVerify) {
+        this.useIssuerToVerify = useIssuerToVerify;
         return this;
     }
 }

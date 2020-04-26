@@ -211,8 +211,10 @@ public class HXUtils {
 
         boolean verifyResult = false;
         try {
-            byte[] address = wallet.decodeAddress(payload.getIss());
-            wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(address));
+            if (material.isUseIssuerToVerify()) {
+                byte[] publickey = wallet.decodeAddress(payload.getIss());
+                wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(publickey));
+            }
             verifyResult = wallet.verifyBySM2(jwtSM3Hash, Base64.getUrlDecoder().decode(signature));
         } catch (SignatureException e) {
             verifyResult = false;
@@ -226,6 +228,7 @@ public class HXUtils {
             e.printStackTrace();
             verifyResult = false;
         }
+
         if (!verifyResult) {
             return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_SIGNATURE_NOT_VALID, "jwt signature not valid");
         }
