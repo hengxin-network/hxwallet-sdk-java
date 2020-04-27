@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class APITest {
@@ -59,9 +61,15 @@ public class APITest {
                 .setT("test-type")
                 .setD(testCard);
 
+        Map<String,Object> map  = new HashMap<>();
+        map.put("test","private_test");
+
         HXTransactionRequest requestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
                 .setPub_data(pubData)
+                .setPriv_data(map)
+                .setSenders_required(false)
+                .setReceivers_required(false)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
 
