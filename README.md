@@ -27,7 +27,7 @@
 
 ### 接入方法
 
-1. 引入jar包依赖 位置:[hxwallet-1.2.0.jar](sample/src/main/lib/hxwallet-1.2.0.jar)
+1. 引入jar包依赖 位置:[hxwallet-1.3.0.jar](sample/src/main/lib/hxwallet-1.3.0.jar)
 2. 使用钱包，需要注入必要的模块
 - 需要注入的有三个模块，分别是IHXSM2Engine,IHXSM2Signer和IHXSM3Digest
 - 其中IHXSM2Signer和IHXSM3Digest提供了基于BC库的默认注入实现，由于BC库SM2加解密的实现逻辑未使用Java Security标准API，SDK中不提供IHXSM2Engine的默认实现
@@ -287,15 +287,22 @@ jwt中，会对请求的method url body进行签名，工具类提供了两个�
     HXResponse<HXSnapshotsBody> response = service.getSnapshots(userAddress, new HXSnapshotRequest())
 ```
 
-3. getSnapshot 查询单条snapshot记录
-根据address和snapshot_id查询记录，id以RESTful标准中的path param的形式附带在uri上
+3. getSnapshot / getSnapshotByTxHash 查询单条snapshot记录
+
+- getSnapshot: 根据address和snapshot_id查询记录，id以RESTful标准中的path param的形式附带在uri上
+- getSnapshotByTxHash: 根据address和tx_hash查询记录
+
 ```java
     public HXResponse<HXSnapshotsBody> getSnapshots(String address, HXSnapshotRequest requestMap) throws SignatureException 
+    public HXResponse<HXSnapshotBody> getSnapshotByTxHash(String address, String tx_hash) throws SignatureException
 ```
 
 ```java
     long snapshotId = 302;
     HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+
+    String txHash = "7f68bc626d4a8d27680c310cd0dfe9ac8d224325c7988ccbb705d1c12abc184f";
+    HXResponse<HXSnapshotBody> snapshotByTxHash = api.getSnapshotByTxHash(TestUtil.userAddress, txHash);
 ```
 
 4. postTransaction 提交一条记录上链
@@ -305,9 +312,12 @@ TransactionRequest的所有参数均为必填，HXFileHolder为选填，需上�
 
 - trace_id: 防重放攻击使用,一般使用UUID
 - pub_data: 链上记录数据，为HXPubData
+- priv_data: 链上记录的加密数据，一个Map对象
 - opponent_addresses: 是一个包含了相关address的列表
 - file: 选填，为HXFileHolder，上传文件时附带
 - files: 选填，为List<HXFileInfo>, 是从Snapshot中获取到的已存在的文件信息，需要更新权限时附带
+- senders_required: boolean值，是否要在这笔记录上附带senders信息
+- receivers_required: boolean值，是否要在这笔记录上附带receivers信息
 
 ```java
     HXPubData pubData = new HXPubData()
