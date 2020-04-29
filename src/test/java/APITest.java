@@ -61,15 +61,15 @@ public class APITest {
                 .setT("test-type")
                 .setD(testCard);
 
-        Map<String,Object> map  = new HashMap<>();
-        map.put("test","private_test");
+        Map<String, Object> map = new HashMap<>();
+        map.put("test", "private_test");
 
         HXTransactionRequest requestMap = new HXTransactionRequest()
                 .setAsset("6b4d1e14ea651021fa5720b9b6e540fcc048760733bc1b0c8756eb84af40f0fa")
                 .setPub_data(pubData)
                 .setPriv_data(map)
                 .setSenders_required(false)
-                .setReceivers_required(false)
+                .setReceivers_required(true)
                 .setOpponent_addresses(Collections.singletonList(TestUtil.opponentAddress))
                 .setTrace_id(UUID.randomUUID().toString());
 
@@ -125,11 +125,17 @@ public class APITest {
 //        // 文件已经被下载到了downloadFile所对应文件，或者可以也通过response里的responseBody获取到file对象
 //        File resultFile = fileHXResponse.responseBody;
 
-        // snapshot
+        // snapshot by id
         long snapshotId = 461;
-        xin.heng.service.dto.HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+        HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
         System.out.println("GET /snapshots/" + snapshotId);
         TestUtil.printResult(snapshotResponse);
+
+        // snapshot by hash
+        String txHash = "7f68bc626d4a8d27680c310cd0dfe9ac8d224325c7988ccbb705d1c12abc184f";
+        HXResponse<HXSnapshotBody> snapshotByTxHash = api.getSnapshotByTxHash(TestUtil.userAddress, txHash);
+        System.out.println("GET /snapshots/" + txHash);
+        TestUtil.printResult(snapshotByTxHash);
     }
 
 

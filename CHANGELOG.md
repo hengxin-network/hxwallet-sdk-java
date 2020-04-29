@@ -1,3 +1,15 @@
+### 2020.4.29
+* snapshot 结构中增加了tx_hash字段.
+* 增加了新的API getSnapshotByTxHash 通过tx_hash查询snapshot记录
+
+
+
+### 2020.4.28
+* snapshot中增加senders，receivers，priv_data字段
+* postTransaction对应增加了senders_required,receivers_required和priv_data.
+
+
+
 ### 2020.4.3
 * 增加了文件下载getFile
 * 修复jwt生成校验逻辑里的一个bug
@@ -5,12 +17,10 @@
 
 
 
-
 ### 2020.4.2
 * 增加了文件权限更新
 * 字段修改符合最新API文档
 * 增加了CHANGELOG.md（即本文件）
-
 
 
 

@@ -11,6 +11,7 @@ public class HXSnapshot<T> {
     String opponent_id;
     String amount;
     String memo;
+    String tx_hash;
     List<String> senders;
     List<String> receivers;
     HXPubData<T> pub_data;
@@ -78,6 +79,15 @@ public class HXSnapshot<T> {
 
     public HXSnapshot<T> setMemo(String memo) {
         this.memo = memo;
+        return this;
+    }
+
+    public String getTx_hash() {
+        return tx_hash;
+    }
+
+    public HXSnapshot<T> setTx_hash(String tx_hash) {
+        this.tx_hash = tx_hash;
         return this;
     }
 
