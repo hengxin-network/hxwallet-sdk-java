@@ -125,9 +125,9 @@ public class HXWallet {
         }
     }
 
-    public void updateSM4Cipher(byte[] key) throws InvalidKeyException {
+    public void updateSM4Cipher(byte[] key,byte[] iv) throws InvalidKeyException {
         if (sm4 != null) {
-            sm4.updateCipher(key);
+            sm4.updateCipher(key,iv);
         } else {
             throw new NullPointerException("you should inject sm4 cipher at first.");
         }

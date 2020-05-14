@@ -167,7 +167,9 @@ public class HXUtils {
 
         //sm2签名
         byte[] sign = wallet.signBySM2(jwtSM3Hash);
+        System.out.println("sign length: " + sign.length);
         String signature = Base64.getUrlEncoder().encodeToString(sign);
+        System.out.println("sign base64 length: " + signature.length());
         //拼接token
         String token = preJwt + "." + signature;
 
@@ -204,8 +206,6 @@ public class HXUtils {
         if (!"JWT".contentEquals(header.getTyp())) {
             return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_JWT_TYPE, "hengxin-network jwt type should use JWT.");
         }
-        System.out.println();
-        System.out.println(signature);
         String preJwt = headerBase64 + "." + payloadBase64;
         byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 

@@ -1,6 +1,7 @@
 package xin.heng.crypto;
 
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 
@@ -8,6 +9,7 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
     public static int DEFAULT_KEY_SIZE = 128;
     public static String ALGORITHM_NAME = "SM4";
     public static String ALGORITHM_NAME_ECB_PADDING = "SM4/ECB/PKCS7Padding";
+    public static String ALGORITHM_NAME_CBC_PADDING = "SM4/CBC/PKCS7Padding";
 
     private KeyGenerator keyGenerator;
 
@@ -34,23 +36,47 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
         keyGenerator.init(DEFAULT_KEY_SIZE, new SecureRandom());
         return keyGenerator.generateKey();
     }
+//
+//    @Override
+//    public void updateCipher(byte[] key) throws InvalidKeyException {
+//        try {
+//            encryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
+//            decryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
+//
+//            Key encryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
+//            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKeySpec);
+//
+//            Key decryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
+//            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKeySpec);
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchProviderException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchPaddingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
-    public void updateCipher(byte[] key) throws InvalidKeyException {
+    public void updateCipher(byte[] key, byte[] iv) throws InvalidKeyException {
         try {
-            encryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
-            decryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
+            encryptCipher = Cipher.getInstance(ALGORITHM_NAME_CBC_PADDING, "BC");
+            decryptCipher = Cipher.getInstance(ALGORITHM_NAME_CBC_PADDING, "BC");
+
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
 
             Key encryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
-            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKeySpec);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKeySpec, ivParameterSpec);
 
             Key decryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
-            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKeySpec);
+            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKeySpec, ivParameterSpec);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
             e.printStackTrace();
         }
     }

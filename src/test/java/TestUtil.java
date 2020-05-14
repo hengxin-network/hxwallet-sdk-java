@@ -25,18 +25,11 @@ public class TestUtil {
     }
 
     public static String pemTestKey = "-----BEGIN PRIVATE KEY-----\n" +
-            "MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQgm+/IcrYoAK9zVIyj\n" +
-            "vNhAqG+Y4wX/8JNmyWP0xv7FfsegCgYIKoEcz1UBgi2hRANCAARJWW0yzmXBZaeC\n" +
-            "YgMBS8qu3I2x5cLe9merwpbwJTl7kj52W9AtKh6UAFcg3ZMGeMq9HvqQpbBzmPkG\n" +
-            "1hg6QX2E\n" +
+            "MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQghKNeZCoMZd3gr5sp\n" +
+            "uYVg7snOpF5+R0yeP3Qt/eQ1e1ugCgYIKoEcz1UBgi2hRANCAATVGjo+eQiNIWon\n" +
+            "2m98Mn2nZQVZ4fw+2fgI1eNP61RtB/v9seehk+9r9VO+5jZsyrtDmhEa6Bo7j68c\n" +
+            "RHyzk8L8\n" +
             "-----END PRIVATE KEY-----";
-
-//    public static String pemTestKey = "-----BEGIN PRIVATE KEY-----\n" +
-//            "MIGTAgEAMBMGByqGSM49AgEGCCqBHM9VAYItBHkwdwIBAQQghwBKUJ/WL+5S8ICX\n" +
-//            "q4RD/J+Pb4rN/DCKPyvnZUpQf3KgCgYIKoEcz1UBgi2hRANCAAR4Nmo2Z9H0pnhD\n" +
-//            "rA1cU1QFY7uzJtU3/wxZvICEUhvcE9I4BMWBZAeYQ9WvtViTU4vx90sPad9YZzSC\n" +
-//            "0DU4/3W5\n" +
-//            "-----END PRIVATE KEY-----";
 
     public static String testData = "BH8awtJVUokVfB3qeHlef5CsLpSd8RjTZd5LI66XbOBEFUB/OWUCv5BBdbG6PowjQHXD3E16uo8zZWKzaqYswhq3Qt7TUfOj4R+MeZUdi2ucl4AWyjVYam883rM4OUxiXx1ys2a0m1RImYAW/4bJcu8=";
     public static String tpk = "HX2StGQezPPPRueENiWDywyjx8NQ4TiRFgSjL5v1ZBboCjAnKHrFEQWT7bkdA4G2L1qQmw5n7NjB1PJEwTB4vy6gkrjWcbJQL5Zyvu5F2oJs4sK4E57AEPnmZMbxyoWDjrZSrBnVgiAUXPVA64KH2vX99zWqhEPKNCeTATRXf5D3UzNkeZwawiNtfcURMcQBBER9hCH2B31kxDKoP8DvNZEqi3uB";
@@ -52,13 +45,13 @@ public class TestUtil {
             "CwlQSebd\n";
 
     public static String testPublicKey = "-----BEGIN PUBLIC KEY-----\n" +
-            "    MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEeDZqNmfR9KZ4Q6wNXFNUBWO7sybV\n" +
-            "    N/8MWbyAhFIb3BPSOATFgWQHmEPVr7VYk1OL8fdLD2nfWGc0gtA1OP91uQ==\n" +
-            "    -----END PUBLIC KEY-----";
+            "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE1Ro6PnkIjSFqJ9pvfDJ9p2UFWeH8\n" +
+            "Ptn4CNXjT+tUbQf7/bHnoZPva/VTvuY2bMq7Q5oRGugaO4+vHER8s5PC/A==\n" +
+            "-----END PUBLIC KEY-----";
 
     public static String testPublicKey2 = "-----BEGIN PUBLIC KEY-----\n" +
-            "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAESVltMs5lwWWngmIDAUvKrtyNseXC\n" +
-            "3vZnq8KW8CU5e5I+dlvQLSoelABXIN2TBnjKvR76kKWwc5j5BtYYOkF9hA==\n" +
+            "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE3vAmwTJkan3s2nWQOk0Eqs31vZMz\n" +
+            "Oj1M/lI0g2U3YgeQYvxq6N0KfVWDjUO+QZ0bxFwHrw76oq54U7daPzr+hw==\n" +
             "-----END PUBLIC KEY-----";
 
     //    static String userAddress = "HX9nwFa8rZyZxeJxPAtugKewStDoFn143KPkQXFtRpMKXevMwMfkadDctz8iCdc5YFdxn9ZakFdYnETHSESRdr4EGQ1Z9EqQpdf4Fth4Ef6aiPhBtqkUhQvJ1s98abpTgBTDkCbZW1YE9Gs4pisT7Yut47hwjgVvMLortBp8y135GFeHnyZivMNXVFgjmSJYtRyLwmN5zqvneZN1YhgRNg1A27q";

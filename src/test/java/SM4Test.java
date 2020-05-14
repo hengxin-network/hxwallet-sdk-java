@@ -15,7 +15,7 @@ public class SM4Test {
 
     static String SM4TestKeyHex = "e9f552d9217722b23adb93765ae61a3d";
     static String SM4TestKeyBase64 = "6fVS2SF3IrI625N2WuYaPQ==";
-
+    static final byte[] IV = new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
     static HXWallet wallet;
 
     public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
@@ -34,7 +34,7 @@ public class SM4Test {
         System.out.println(Base64.getMimeEncoder().encodeToString(key));
         System.out.println(secretKey.getFormat());
 
-        wallet.updateSM4Cipher(key);
+        wallet.updateSM4Cipher(key,IV);
 
         String result = wallet.encryptBySM4(rawDataString);
         System.out.println("encrypt data: " + result);

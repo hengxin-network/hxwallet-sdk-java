@@ -9,7 +9,7 @@ public interface IHXSM4Engine {
 
     SecretKey generateKey();
 
-    void updateCipher(byte[] key) throws InvalidKeyException;
+    void updateCipher(byte[] key,byte[] iv) throws InvalidKeyException;
 
     byte[] encrypt(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException;
 
