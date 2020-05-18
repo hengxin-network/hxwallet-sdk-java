@@ -27,7 +27,7 @@
 
 ### 接入方法
 
-1. 引入jar包依赖 位置:[hxwallet-1.3.0.jar](sample/src/main/lib/hxwallet-1.3.0.jar)
+1. 引入jar包依赖 位置:[hxwallet-1.4.0.jar](sample/src/main/lib/hxwallet-1.4.0.jar)
 2. 使用钱包，需要注入必要的模块
 - 需要注入的有三个模块，分别是IHXSM2Engine,IHXSM2Signer和IHXSM3Digest
 - 其中IHXSM2Signer和IHXSM3Digest提供了基于BC库的默认注入实现，由于BC库SM2加解密的实现逻辑未使用Java Security标准API，SDK中不提供IHXSM2Engine的默认实现
@@ -140,12 +140,13 @@ API:
 
 5. 使用SM4加密和解密数据
 - 需要先注入SM4Engine实例,
-- 通过updateSM4Cipher方法更新engine中的秘钥key
+- 通过updateSM4Cipher方法更新engine中的秘钥key和iv
+- HXWallet这里会在没有传入iv的时候，使用一个默认的iv : new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
 API:
 ```java
     public SecretKey generateSM4Key(); 
-    public void updateSM4Cipher(byte[] key) throws InvalidKeyException 
+    public void updateSM4Cipher(byte[] key,byte[] iv) throws InvalidKeyException 
     public byte[] encryptBySM4(byte[] rawData) throws BadPaddingException, IllegalBlockSizeException 
     public byte[] decryptBySM4(byte[] encryptData) throws BadPaddingException, IllegalBlockSizeException 
 ```

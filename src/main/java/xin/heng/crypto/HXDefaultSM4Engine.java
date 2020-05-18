@@ -36,26 +36,6 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
         keyGenerator.init(DEFAULT_KEY_SIZE, new SecureRandom());
         return keyGenerator.generateKey();
     }
-//
-//    @Override
-//    public void updateCipher(byte[] key) throws InvalidKeyException {
-//        try {
-//            encryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
-//            decryptCipher = Cipher.getInstance(ALGORITHM_NAME_ECB_PADDING, "BC");
-//
-//            Key encryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
-//            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKeySpec);
-//
-//            Key decryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
-//            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKeySpec);
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchProviderException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     @Override
     public void updateCipher(byte[] key, byte[] iv) throws InvalidKeyException {

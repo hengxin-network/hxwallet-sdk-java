@@ -1,4 +1,5 @@
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXWallet;
 
 import javax.crypto.BadPaddingException;
@@ -21,6 +22,7 @@ public class SM4Test {
     public static void main(String[] args) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
 
         String rawDataString = "这句话是使用SM4算法加密的";
+//        byte[] testKey =  new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
         Security.addProvider(new BouncyCastleProvider());
         wallet = HXWallet.getInstance();
@@ -29,17 +31,14 @@ public class SM4Test {
         SecretKey secretKey = wallet.generateSM4Key();
         byte[] key = secretKey.getEncoded();
 
-        assert "SM4".contentEquals(secretKey.getAlgorithm());
-        System.out.println(secretKey.getAlgorithm());
         System.out.println(Base64.getMimeEncoder().encodeToString(key));
-        System.out.println(secretKey.getFormat());
 
         wallet.updateSM4Cipher(key,IV);
 
-        String result = wallet.encryptBySM4(rawDataString);
-        System.out.println("encrypt data: " + result);
+        byte[] result = wallet.encryptBySM4(rawDataString.getBytes());
+        System.out.println("encrypt data: " + Hex.toHexString(result));
 
-        String decryptData = wallet.decryptBySM4(result);
-        System.out.println("decrypt data: " + decryptData);
+        byte[] decryptData = wallet.decryptBySM4(result);
+        System.out.println("decrypt data: " + new String(decryptData));
     }
 }
