@@ -4,6 +4,7 @@ public class HXUserInfo {
     public String user_id;
     public String created_at;
     public String address;
+    public String private_key;
 
     public String getUser_id() {
         return user_id;
@@ -28,4 +29,13 @@ public class HXUserInfo {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getPrivate_key() {
+        return private_key;
+    }
+
+    public void setPrivate_key(String private_key) {
+        this.private_key = private_key;
+    }
+
 }

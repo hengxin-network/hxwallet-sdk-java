@@ -7,15 +7,13 @@ import xin.heng.service.HXService;
 import xin.heng.service.IHXHttpClient;
 import xin.heng.service.dto.*;
 import xin.heng.service.vo.HXBaseUrl;
+import xin.heng.service.vo.HXFileInfo;
 import xin.heng.service.vo.HXPubData;
 
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class APITest {
 
@@ -39,12 +37,12 @@ public class APITest {
         api.injectWallet(wallet);
 
         // postUser
-//        HXResponse<HXUserInfoBody> postUsersResponse = api.postUsers(TestUtil.userAddress);
-//        TestUtil.printResult(postUsersResponse);
+        HXResponse<HXUserInfoBody> postUsersResponse = api.postUsers(TestUtil.userAddress);
+        TestUtil.printResult(postUsersResponse);
 
         // getInfo
-//        HXResponse<HXUserInfoBody> getInfoResponse = api.getInfo(TestUtil.userAddress);
-//        TestUtil.printResult(getInfoResponse);
+        HXResponse<HXUserInfoBody> getInfoResponse = api.getInfo(TestUtil.userAddress);
+        TestUtil.printResult(getInfoResponse);
 
         // getSnapshots
         HXSnapshotRequest snapshotRequest = new HXSnapshotRequest()
@@ -81,7 +79,7 @@ public class APITest {
 //        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
 //            fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
 //        } else {
-//            fileInfos = JSON.parseArray(TestUtil.testFileInfos, HXFileInfo.class);
+//            fileInfos = .parseArray(TestUtil.testFileInfos, HXFileInfo.class);
 //        }
 //
 //        HXTransactionRequest updateFilesRequest = new HXTransactionRequest()
@@ -126,13 +124,13 @@ public class APITest {
 //        File resultFile = fileHXResponse.responseBody;
 
         // snapshot by id
-        long snapshotId = 461;
+        long snapshotId = 697;
         HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
         System.out.println("GET /snapshots/" + snapshotId);
         TestUtil.printResult(snapshotResponse);
 
         // snapshot by hash
-        String txHash = "7f68bc626d4a8d27680c310cd0dfe9ac8d224325c7988ccbb705d1c12abc184f";
+        String txHash = "4e68208c9527ec6d7921461e34441cade4f60654bf11f6dc91c6a0afed696810";
         HXResponse<HXSnapshotBody> snapshotByTxHash = api.getSnapshotByTxHash(TestUtil.userAddress, txHash);
         System.out.println("GET /snapshots/" + txHash);
         TestUtil.printResult(snapshotByTxHash);

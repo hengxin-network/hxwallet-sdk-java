@@ -71,6 +71,7 @@ public class HXDefaultHttpClient implements IHXHttpClient {
         try {
             String urlPath = HXUtils.buildUrlPathWithQueries(path, queries);
             URL url = HXUtils.packageRequestUrl(this, urlPath);
+            System.out.println(url.toString());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             if (headers != null) {
                 headers.forEach((k, v) -> {

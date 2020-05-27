@@ -1,3 +1,6 @@
+### 2020.5.27
+* postUser接口返回数据中增加了private_key字段.
+
 ### 2020.4.29
 * snapshot 结构中增加了tx_hash字段.
 * 增加了新的API getSnapshotByTxHash 通过tx_hash查询snapshot记录
