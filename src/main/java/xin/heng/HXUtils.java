@@ -77,6 +77,9 @@ public class HXUtils {
         if (!path.startsWith("/")) {
             path = "/" + path;
         }
+        if (client.getBaseUrl().getPort() == HXBaseUrl.UNSPECIFIED) {
+            return new URL(client.getBaseUrl().getSchema() + "://" + client.getBaseUrl().getHost() + path);
+        }
         return new URL(client.getBaseUrl().getSchema() + "://" + client.getBaseUrl().getHost() + ":" + client.getBaseUrl().getPort() + path);
     }
 
@@ -107,16 +110,15 @@ public class HXUtils {
             payloadJson = payloadJson + "}";
         }
 
-        String headerJson = "{\"alg\":\"SM2\",\"typ\":\"JWT\"}";
+        String headerJson = "{\"alg\":\"HXJWT\",\"typ\":\"JWT\"}";
 
         String headerStr = Base64.getUrlEncoder().encodeToString(headerJson.getBytes(UTF_8));
         String payloadStr = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(UTF_8));
         String preJwt = (headerStr + "." + payloadStr).replace("=", "");
-        //sm3取hash
-        byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 
         //sm2签名
-        byte[] sign = wallet.signBySM2(jwtSM3Hash);
+        byte[] sign = wallet.signBySM2(preJwt.getBytes());
+        if (sign.length != 64) sign = sm2RsAsn1ToPlain(sign);
         String signature = Base64.getUrlEncoder().encodeToString(sign);
         //拼接token
         String token = preJwt + "." + signature;
@@ -154,22 +156,20 @@ public class HXUtils {
         } else {
             payloadJson = payloadJson + "}";
         }
-        jwtHeader.setAlg("SM2");
+        jwtHeader.setAlg("HXJWT");
         jwtHeader.setTyp("JWT");
 
-        String headerJson = "{\"alg\":\"SM2\",\"typ\":\"JWT\"}";
+        String headerJson = "{\"alg\":\"HXJWT\",\"typ\":\"JWT\"}";
 
         String headerStr = Base64.getUrlEncoder().encodeToString(headerJson.getBytes(UTF_8));
         String payloadStr = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(UTF_8));
         String preJwt = (headerStr + "." + payloadStr).replace("=", "");
-        //sm3取hash
-        byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 
         //sm2签名
-        byte[] sign = wallet.signBySM2(jwtSM3Hash);
-        System.out.println("sign length: " + sign.length);
+        byte[] sign = wallet.signBySM2(preJwt.getBytes());
+        if (sign.length != 64) sign = sm2RsAsn1ToPlain(sign);
         String signature = Base64.getUrlEncoder().encodeToString(sign);
-        System.out.println("sign base64 length: " + signature.length());
+
         //拼接token
         String token = preJwt + "." + signature;
 
@@ -200,14 +200,13 @@ public class HXUtils {
         jwt.setPayload(payload);
         jwt.setSignature(signature);
 
-        if (!"SM2".contentEquals(header.getAlg())) {
-            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_ALGORITHM, "hengxin-network jwt algorithm should use SM2.");
+        if (!"HXJWT".contentEquals(header.getAlg())) {
+            return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_ALGORITHM, "hengxin-network jwt algorithm should use HXJWT.");
         }
         if (!"JWT".contentEquals(header.getTyp())) {
             return new HXJwtVerifyResult(jwt, false, HXConstants.JwtVerifyCode.WRONG_JWT_TYPE, "hengxin-network jwt type should use JWT.");
         }
         String preJwt = headerBase64 + "." + payloadBase64;
-        byte[] jwtSM3Hash = wallet.digestBySM3(preJwt.getBytes());
 
         boolean verifyResult = false;
         try {
@@ -215,7 +214,9 @@ public class HXUtils {
                 byte[] publickey = wallet.decodeAddress(payload.getIss());
                 wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(publickey));
             }
-            verifyResult = wallet.verifyBySM2(jwtSM3Hash, Base64.getUrlDecoder().decode(signature));
+            byte[] sig = Base64.getUrlDecoder().decode(signature);
+            if (sig.length == RS_LEN * 2) sig = sm2RsPlainToAsn1(sig);
+            verifyResult = wallet.verifyBySM2(preJwt.getBytes(), sig);
         } catch (SignatureException e) {
             verifyResult = false;
         } catch (InvalidAddressException e) {
@@ -328,4 +329,59 @@ public class HXUtils {
 
         return out;
     }
+
+
+    private static final int RS_LEN = 32;
+    private static final int ASN1_OBJECT = 48;
+    private static final int ASN1_INTEGER = 2;
+    private static final byte[] ASN1_START = new byte[2];
+    private static final byte[] ASN1_KEY = new byte[2];
+
+    public static byte[] sm2RsPlainToAsn1(byte[] plain) {
+        boolean rZero = plain[0] < 0;
+        boolean sZero = plain[32] < 0;
+        int totalLength = 68;
+        if (rZero) totalLength++;
+        if (sZero) totalLength++;
+        byte[] asn1 = new byte[totalLength + 2];
+        int cursor = 4;
+        asn1[0] = ASN1_OBJECT;
+        asn1[1] = (byte) totalLength;
+        asn1[2] = ASN1_INTEGER;
+        asn1[3] = (byte) (rZero ? RS_LEN + 1 : RS_LEN);
+        if (rZero) {
+            asn1[cursor] = 0;
+            cursor++;
+        }
+        System.arraycopy(plain, 0, asn1, cursor, RS_LEN);
+        cursor += RS_LEN;
+        asn1[cursor] = ASN1_INTEGER;
+        asn1[cursor + 1] = (byte) (sZero ? RS_LEN + 1 : RS_LEN);
+        cursor += 2;
+        if (sZero) {
+            asn1[cursor] = 0;
+            cursor++;
+        }
+        System.arraycopy(plain, RS_LEN, asn1, cursor, RS_LEN);
+        return asn1;
+    }
+
+    public static byte[] sm2RsAsn1ToPlain(byte[] asn1) {
+        byte[] plain = new byte[2 * RS_LEN];
+        int cursor = 4;
+        int rLength = asn1[3];
+        if (rLength == 33) {
+            cursor++;
+        }
+        System.arraycopy(asn1, cursor, plain, 0, RS_LEN);
+        cursor += RS_LEN;
+        int sLength = asn1[cursor + 1];
+        cursor += 2;
+        if (sLength == 33) {
+            cursor++;
+        }
+        System.arraycopy(asn1, cursor, plain, RS_LEN, RS_LEN);
+        return plain;
+    }
+
 }

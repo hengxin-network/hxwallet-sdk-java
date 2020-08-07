@@ -1,6 +1,7 @@
 package xin.heng.service.vo;
 
 public class HXBaseUrl {
+    public static final int UNSPECIFIED = -1;
     private String schema = "http";
     private String host;
     private int port;
@@ -9,6 +10,12 @@ public class HXBaseUrl {
         setSchema(schema);
         setHost(host);
         setPort(port);
+    }
+
+    public HXBaseUrl(String schema,String host){
+        setSchema(schema);
+        setHost(host);
+        setPort(UNSPECIFIED);
     }
 
     public HXBaseUrl setSchema(String schema) {

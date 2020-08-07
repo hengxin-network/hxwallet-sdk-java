@@ -3,10 +3,8 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
-import xin.heng.service.vo.HXFileInfo;
-import xin.heng.service.vo.HXJwtBuildMaterial;
+import xin.heng.service.error.JwtNotValidException;
+import xin.heng.service.vo.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

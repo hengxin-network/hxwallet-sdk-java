@@ -5,6 +5,7 @@ public class HXUserInfo {
     public String created_at;
     public String address;
     public String private_key;
+    public String hex_private_key;
 
     public String getUser_id() {
         return user_id;
@@ -38,4 +39,11 @@ public class HXUserInfo {
         this.private_key = private_key;
     }
 
+    public String getHex_private_key() {
+        return hex_private_key;
+    }
+
+    public void setHex_private_key(String hex_private_key) {
+        this.hex_private_key = hex_private_key;
+    }
 }
