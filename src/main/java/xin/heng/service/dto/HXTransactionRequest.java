@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HXTransactionRequest {
+    private boolean async = false;
     private String asset;
     private List<String> opponent_addresses;
     private String trace_id;
@@ -86,5 +87,13 @@ public class HXTransactionRequest {
     public HXTransactionRequest setFiles(List<HXFileInfo> files) {
         this.files = files;
         return this;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    public void setAsync(boolean async) {
+        this.async = async;
     }
 }
