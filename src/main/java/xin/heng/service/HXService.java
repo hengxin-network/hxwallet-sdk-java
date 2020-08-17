@@ -3,7 +3,6 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.error.JwtNotValidException;
 import xin.heng.service.vo.*;
 
 import java.io.ByteArrayInputStream;
@@ -250,6 +249,36 @@ public class HXService {
         headers.put("Content-Type", "application/json;charset=utf-8");
 
         HXResponse<String> stringResponse = httpClient.get("/snapshots", headers, queries);
+        HXResponse<HXSnapshotsBody> snapshotsResponse = new HXResponse<>();
+        snapshotsResponse.httpCode = stringResponse.httpCode;
+        snapshotsResponse.originError = stringResponse.originError;
+        if (stringResponse.responseBody != null && stringResponse.responseBody.length() != 0) {
+            snapshotsResponse.responseBody = HXUtils.optFromJson(stringResponse.responseBody, HXSnapshotsBody.class);
+        }
+        return snapshotsResponse;
+    }
+
+    public HXResponse<HXSnapshotsBody> getNetworkSnapshots(String address, HXNetworkSnapshotsRequest request) throws SignatureException {
+        HashMap<String,String> queries = new HashMap<>();
+        if (request!=null && request.getUserIds() != null && !request.getUserIds().isEmpty()){
+            String userIdx = String.join(",",request.getUserIds());
+            queries.put("user_ids",userIdx);
+        }
+        if (request!=null && request.getAddresses() != null && !request.getAddresses().isEmpty()){
+            String addrs = String.join(",",request.getAddresses());
+            queries.put("addresses",addrs);
+        }
+        HXJwtBuildMaterial jwtBuildMaterial = new HXJwtBuildMaterial()
+                .setAddress(address)
+                .setBody(null)
+                .setExpiredTime(expiredTime)
+                .setRequestMethod(HXConstants.HTTP_METHOD_GET)
+                .setUrl(HXUtils.buildUrlPathWithQueries("/network/snapshots",queries));
+        String jwtToken = HXUtils.buildJwtString(wallet,jwtBuildMaterial);
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + jwtToken);
+        headers.put("Content-Type", "application/json;charset=utf-8");
+        HXResponse<String> stringResponse = httpClient.get("/network/snapshots", headers, queries);
         HXResponse<HXSnapshotsBody> snapshotsResponse = new HXResponse<>();
         snapshotsResponse.httpCode = stringResponse.httpCode;
         snapshotsResponse.originError = stringResponse.originError;

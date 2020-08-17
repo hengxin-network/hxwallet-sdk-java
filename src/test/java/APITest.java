@@ -85,87 +85,96 @@ public class APITest {
         TestUtil.printResult(snapshotsResponse);
 
         // postTransaction 只上传数据，不附带文件
-        TestCard testCard = new TestCard()
-                .setName("test-card")
-                .setNumber(String.valueOf(Random.Default.nextInt()));
-
-        HXPubData<TestCard> pubData = new HXPubData<TestCard>()
-                .setT("test-type")
-                .setD(testCard);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("test", "private_test");
-
-        HXTransactionRequest requestMap = new HXTransactionRequest()
-                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
-                .setPub_data(pubData)
-                .setPriv_data(map)
-                .setSenders_required(false)
-                .setReceivers_required(true)
-                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
-                .setTrace_id(UUID.randomUUID().toString());
-
-        HXResponse<HXSnapshotBody> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
-        TestUtil.printResult(HXResponse);
-
-//        // postTransaction 给新的Address附加权限
-        List<HXFileInfo> fileInfos = new ArrayList<>();
-        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
-            fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
-        }
-
-        HXTransactionRequest updateFilesRequest = new HXTransactionRequest()
-                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
-                .setPub_data(pubData)
-                .setFiles(fileInfos)
-                .setOpponent_addresses(Arrays.asList(TestUtil.userAddress, TestUtil.userAddress))
-                .setTrace_id(UUID.randomUUID().toString());
-        System.out.println("POST /transaction/ 给文件追加一个新的address的访问权限");
-        HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
-        TestUtil.printResult(updateFilesResponse);
-
-//        // postTransaction 上传数据并附带文件
-        File file = new File("./src/test/resources/test.txt");
-        HXFileHolder fileHolder = new HXFileHolder()
-                .setFile(file)
-                .setUploadName("test.txt");
-
-        HXPubData filePubData = new HXPubData()
-                .setT("test-fileupload-type")
-                .setD("test-fileData-testfile");
-
-        HXTransactionRequest fileRequestMap = new HXTransactionRequest()
-                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
-                .setPub_data(filePubData)
-                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
-                .setTrace_id(UUID.randomUUID().toString());
-
-        HXResponse<HXSnapshotBody> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
-        System.out.println("POST /transaction/ 上传文件");
-        TestUtil.printResult(fileResponse);
-
-        // snapshot by id
-        long snapshotId = 28;
-        HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
-        System.out.println("GET /snapshots/" + snapshotId);
-        TestUtil.printResult(snapshotResponse);
-
-//        // 从链上获取并下载文件保存到本地
-        File downloadFile = new File("./download/test_" + System.currentTimeMillis() + ".txt");
-        if (!downloadFile.exists()) {
-            File parent = new File(downloadFile.getParent());
-            if (!parent.exists()) parent.mkdirs();
-            downloadFile.createNewFile();
-        }
-        HXResponse<File> fileHXResponse = api.getFile(TestUtil.userAddress, (HXFileInfo) snapshotResponse.responseBody.data.getFiles().get(0), downloadFile);
-        // 文件已经被下载到了downloadFile所对应文件，或者可以也通过response里的responseBody获取到file对象
-        File resultFile = fileHXResponse.responseBody;
+//        TestCard testCard = new TestCard()
+//                .setName("test-card")
+//                .setNumber(String.valueOf(Random.Default.nextInt()));
+//
+//        HXPubData<TestCard> pubData = new HXPubData<TestCard>()
+//                .setT("test-type")
+//                .setD(testCard);
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("test", "private_test");
+//
+//        HXTransactionRequest requestMap = new HXTransactionRequest()
+//                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
+//                .setPub_data(pubData)
+//                .setPriv_data(map)
+//                .setSenders_required(false)
+//                .setReceivers_required(true)
+//                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
+//                .setTrace_id(UUID.randomUUID().toString());
+//
+//        HXResponse<HXSnapshotBody> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
+//        TestUtil.printResult(HXResponse);
+//
+////        // postTransaction 给新的Address附加权限
+//        List<HXFileInfo> fileInfos = new ArrayList<>();
+//        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
+//            fileInfos = snapshotsResponse.responseBody.data.get(0).getFiles();
+//        }
+//
+//        HXTransactionRequest updateFilesRequest = new HXTransactionRequest()
+//                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
+//                .setPub_data(pubData)
+//                .setFiles(fileInfos)
+//                .setOpponent_addresses(Arrays.asList(TestUtil.userAddress, TestUtil.userAddress))
+//                .setTrace_id(UUID.randomUUID().toString());
+//        System.out.println("POST /transaction/ 给文件追加一个新的address的访问权限");
+//        HXResponse<HXSnapshotBody> updateFilesResponse = api.postTransactions(TestUtil.userAddress, updateFilesRequest, null);
+//        TestUtil.printResult(updateFilesResponse);
+//
+////        // postTransaction 上传数据并附带文件
+//        File file = new File("./src/test/resources/test.txt");
+//        HXFileHolder fileHolder = new HXFileHolder()
+//                .setFile(file)
+//                .setUploadName("test.txt");
+//
+//        HXPubData filePubData = new HXPubData()
+//                .setT("test-fileupload-type")
+//                .setD("test-fileData-testfile");
+//
+//        HXTransactionRequest fileRequestMap = new HXTransactionRequest()
+//                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
+//                .setPub_data(filePubData)
+//                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
+//                .setTrace_id(UUID.randomUUID().toString());
+//
+//        HXResponse<HXSnapshotBody> fileResponse = api.postTransactions(TestUtil.userAddress, fileRequestMap, fileHolder);
+//        System.out.println("POST /transaction/ 上传文件");
+//        TestUtil.printResult(fileResponse);
+//
+//        // snapshot by id
+//        long snapshotId = 28;
+//        HXResponse<HXSnapshotBody> snapshotResponse = api.getSnapshot(TestUtil.userAddress, snapshotId);
+//        System.out.println("GET /snapshots/" + snapshotId);
+//        TestUtil.printResult(snapshotResponse);
+//
+////        // 从链上获取并下载文件保存到本地
+//        File downloadFile = new File("./download/test_" + System.currentTimeMillis() + ".txt");
+//        if (!downloadFile.exists()) {
+//            File parent = new File(downloadFile.getParent());
+//            if (!parent.exists()) parent.mkdirs();
+//            downloadFile.createNewFile();
+//        }
+//        HXResponse<File> fileHXResponse = api.getFile(TestUtil.userAddress, (HXFileInfo) snapshotResponse.responseBody.data.getFiles().get(0), downloadFile);
+//        // 文件已经被下载到了downloadFile所对应文件，或者可以也通过response里的responseBody获取到file对象
+//        File resultFile = fileHXResponse.responseBody;
 
         // snapshot by hash
         String txHash = "35355b32a533b27cd78264b8c62ced3a37eaf1269e16f2277c9891ce17875ae0";
         HXResponse<HXSnapshotBody> snapshotByTxHash = api.getSnapshotByTxHash(TestUtil.userAddress, txHash);
         System.out.println("GET /snapshots/" + txHash);
         TestUtil.printResult(snapshotByTxHash);
+
+        // network snapshots
+        ArrayList<String> addrs = new ArrayList<>();
+        addrs.add(TestUtil.userAddress);
+        HXNetworkSnapshotsRequest request = new HXNetworkSnapshotsRequest()
+                .setAddresses(addrs);
+        xin.heng.service.dto.HXResponse<HXSnapshotsBody> response = api.getNetworkSnapshots(TestUtil.userAddress, request);
+        System.out.println("GET /network/snapshots" );
+        TestUtil.printResult(response);
     }
 
 

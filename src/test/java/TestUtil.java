@@ -55,7 +55,7 @@ public class TestUtil {
             "-----END PUBLIC KEY-----";
 
     //    static String userAddress = "HX9nwFa8rZyZxeJxPAtugKewStDoFn143KPkQXFtRpMKXevMwMfkadDctz8iCdc5YFdxn9ZakFdYnETHSESRdr4EGQ1Z9EqQpdf4Fth4Ef6aiPhBtqkUhQvJ1s98abpTgBTDkCbZW1YE9Gs4pisT7Yut47hwjgVvMLortBp8y135GFeHnyZivMNXVFgjmSJYtRyLwmN5zqvneZN1YhgRNg1A27q";
-    static String userAddress =  "HXBUSRNdKqyzk1mUDaaPkk2c3Sczha38jj8zt2a1vMJy3prFJq9aA1AuSmidymLtKj4MHVvpAqX3HFi8iWNU3BMunYW4TSA29r1UzNxVZfJdqGeQQrziUfd7WULSUXWJozFv4yGkkqrCSt";
+    static String userAddress = "HXBUSRNdKqyzk1mUDaaPkk2c3Sczha38jj8zt2a1vMJy3prFJq9aA1AuSmidymLtKj4MHVvpAqX3HFi8iWNU3BMunYW4TSA29r1UzNxVZfJdqGeQQrziUfd7WULSUXWJozFv4yGkkqrCSt";
     static String opponentAddress = "HX2DKYCAp2b36THYMKdVsM8KUEF7m92aF5MkTMWFN7ex7xttYusHRwy19kYGjZCPxYDezgZqPgpKLSFMMFtbAHFD41nEKZW9EPUQLZQe1uhp7bU4WC8PN4jvKe2jGdxd4KtdpxnmG8TJemCXqbgjPanQxL6BEJABFPBDERgPh6WvswpNdiZCDNMbTYVVAMv3izgHumSr622Gvz8xn82rRkYQaFFn";
 
 

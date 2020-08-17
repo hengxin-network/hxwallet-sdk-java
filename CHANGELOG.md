@@ -1,5 +1,15 @@
+### 2020.8.17
+* 新增getNewworkSnapshots接口及相关model
+
+### 2020.8.13
+* 算法切换至国密
+* postTransaction增加了 async 参数
+* 原sdk放至在v1分支
+
+
 ### 2020.5.27
 * postUser接口返回数据中增加了private_key字段.
+
 
 ### 2020.4.29
 * snapshot 结构中增加了tx_hash字段.
