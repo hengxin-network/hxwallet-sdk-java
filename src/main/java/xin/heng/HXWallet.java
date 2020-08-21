@@ -21,7 +21,7 @@ public class HXWallet {
         return INSTANCE.hxWallet;
     }
 
-    private static byte[] IV = new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    private static byte[] IV = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     private IHXSM2Signer sm2Signer;
     private IHXSM2Engine sm2Engine;
     private IHXSM3Digest sm3;
@@ -126,9 +126,9 @@ public class HXWallet {
         }
     }
 
-    public void updateSM4Cipher(byte[] key,byte[] iv) throws InvalidKeyException {
+    public void updateSM4Cipher(byte[] key, byte[] iv) throws InvalidKeyException {
         if (sm4 != null) {
-            sm4.updateCipher(key,iv);
+            sm4.updateCipher(key, iv);
         } else {
             throw new NullPointerException("you should inject sm4 cipher at first.");
         }
@@ -136,7 +136,7 @@ public class HXWallet {
 
     public void updateSM4Cipher(byte[] key) throws InvalidKeyException {
         if (sm4 != null) {
-            sm4.updateCipher(key,IV);
+            sm4.updateCipher(key, IV);
         } else {
             throw new NullPointerException("you should inject sm4 cipher at first.");
         }
@@ -229,5 +229,15 @@ public class HXWallet {
         }
         byte[] e = Arrays.copyOfRange(data, 66, data.length);
         return e;
+    }
+
+    public boolean verifyAddress(String address) {
+        try {
+            decodeAddress(address);
+        } catch (InvalidAddressException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
