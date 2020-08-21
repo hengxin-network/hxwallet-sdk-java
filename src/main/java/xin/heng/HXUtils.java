@@ -384,4 +384,13 @@ public class HXUtils {
         return plain;
     }
 
+    public static byte[] concatenate(byte[] x1, byte[] x2) {
+        if (x1 == null && x2 == null) return new byte[0];
+        if (x2 == null) return x1;
+        if (x1 == null) return x2;
+        byte[] result = new byte[x1.length + x2.length];
+        System.arraycopy(x1, 0, result, 0, x1.length);
+        System.arraycopy(x2, 0, result, x1.length, x2.length);
+        return result;
+    }
 }

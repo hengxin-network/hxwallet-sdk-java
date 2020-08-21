@@ -210,15 +210,24 @@ public class HXWallet {
     }
 
     public byte[] decodeAddress(String rawAddress) throws InvalidAddressException {
-        String address = rawAddress;
-        if (address.startsWith("HX")) {
-            address = address.substring(2);
+        if (rawAddress.startsWith("HX")) {
+            rawAddress = rawAddress.substring(2);
+        } else {
+            throw new InvalidAddressException("address not start with HX.");
         }
-        byte[] decode = Base58.decodeChecked(address);
-        if (decode.length != 155) {
+        byte[] decoded = Base58.decode(rawAddress);
+        byte[] data = Arrays.copyOfRange(decoded, 0, decoded.length - 4);
+        byte[] crc = Arrays.copyOfRange(decoded, decoded.length - 4, decoded.length);
+        byte[] concatenate = HXUtils.concatenate(Base58.HX, data);
+        byte[] digest = digestBySM3(concatenate);
+        byte[] checked = Arrays.copyOfRange(digest, 0, 4);
+        if (!Arrays.equals(crc, checked)) {
+            throw new InvalidAddressException("address crc check not passed.");
+        }
+        if (data.length != 99) {
             throw new InvalidAddressException("not a valid address, public key length not correct.");
         }
-        byte[] publicKey = Arrays.copyOfRange(decode, 64, decode.length);
-        return publicKey;
+        byte[] e = Arrays.copyOfRange(data, 66, data.length);
+        return e;
     }
 }
