@@ -10,16 +10,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -393,4 +393,132 @@ public class HXUtils {
         System.arraycopy(x2, 0, result, x1.length, x2.length);
         return result;
     }
+
+    public static BigInteger TWO = BigInteger.valueOf(2);
+    public static final BigInteger sm2_p = new BigInteger("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16);
+    public static BigInteger sm2_a = new BigInteger("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC", 16);
+    public static BigInteger sm2_b = new BigInteger("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16);
+    private static String prefix = "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE";
+
+    public static byte[] decompressPublicKey(byte[] compressed) throws GeneralSecurityException {
+        byte[] trimmedX = Arrays.copyOfRange(compressed, 1, 33);
+        BigInteger x = new BigInteger(1, trimmedX);
+        BigInteger xSquare = x.pow(3).mod(sm2_p);
+        BigInteger yPower = xSquare.add(x.multiply(sm2_a)).add(sm2_b);
+        BigInteger y = modSqrt(yPower, sm2_p);
+
+        if (compressed[0] != (y.mod(TWO).byteValue()+ 2)) {
+            y = sm2_p.subtract(y);
+        }
+
+        byte[] yVal = y.toByteArray();
+        if (yVal[0] == 0) {
+            yVal = Arrays.copyOfRange(yVal, 1, yVal.length);
+        }
+        if (yVal.length < 32) {
+            byte[] yNewVal = new byte[32];
+            System.arraycopy(yVal, 0, yNewVal, yNewVal.length - 32, yVal.length);
+            yVal = yNewVal;
+        }
+        byte[] pref = Base64.getMimeDecoder().decode(prefix);
+        byte[] result = concatenate(concatenate(pref, trimmedX), yVal);
+        return result;
+    }
+
+    public static String decompressPublicKeyBase64(byte[] compressed) throws GeneralSecurityException {
+        return Base64.getMimeEncoder().encodeToString(decompressPublicKey(compressed));
+    }
+
+    /**
+     * Computes a square root modulo an odd prime. Timing and exceptions can leak information about
+     * the inputs. Therefore this method must only be used to decompress public keys.
+     *
+     * @param x the square
+     * @param p the prime modulus (the behaviour of the method is undefined if p is not prime).
+     * @return a value s such that s^2 mod p == x mod p
+     * @throws GeneralSecurityException if the square root could not be found.
+     */
+    protected static BigInteger modSqrt(BigInteger x, BigInteger p) throws GeneralSecurityException {
+        if (p.signum() != 1) {
+            throw new InvalidAlgorithmParameterException("p must be positive");
+        }
+        x = x.mod(p);
+        BigInteger squareRoot = null;
+        // Special case for x == 0.
+        // This check is necessary for Cipolla's algorithm.
+        if (x.equals(BigInteger.ZERO)) {
+            return BigInteger.ZERO;
+        }
+        if (p.testBit(0) && p.testBit(1)) {
+            // Case p % 4 == 3
+            // q = (p + 1) / 4
+            BigInteger q = p.add(BigInteger.ONE).shiftRight(2);
+            squareRoot = x.modPow(q, p);
+        } else if (p.testBit(0) && !p.testBit(1)) {
+            // Case p % 4 == 1
+            // For this case we use Cipolla's algorithm.
+            // This alogorithm is preferrable to Tonelli-Shanks for primes p where p-1 is divisible by
+            // a large power of 2, which is a frequent choice since it simplifies modular reduction.
+            BigInteger a = BigInteger.ONE;
+            BigInteger d = null;
+            BigInteger q1 = p.subtract(BigInteger.ONE).shiftRight(1);
+            int tries = 0;
+            while (true) {
+                d = a.multiply(a).subtract(x).mod(p);
+                // Special case d==0. We need d!=0 below.
+                if (d.equals(BigInteger.ZERO)) {
+                    return a;
+                }
+                // Computes the Legendre symbol. Using the Jacobi symbol would be a faster.
+                BigInteger t = d.modPow(q1, p);
+                if (t.add(BigInteger.ONE).equals(p)) {
+                    // d is a quadratic non-residue.
+                    break;
+                } else if (!t.equals(BigInteger.ONE)) {
+                    // p does not divide d. Hence, t != 1 implies that p is not a prime.
+                    throw new InvalidAlgorithmParameterException("p is not prime");
+                } else {
+                    a = a.add(BigInteger.ONE);
+                }
+                tries++;
+                // If 128 tries were not enough to find a quadratic non-residue, then it is likely that
+                // p is not prime. To avoid an infinite loop in this case we perform a primality test.
+                // If p is prime then this test will be done with a negligible probability of 2^{-128}.
+                if (tries == 128) {
+                    if (!p.isProbablePrime(80)) {
+                        throw new InvalidAlgorithmParameterException("p is not prime");
+                    }
+                }
+            }
+            // Since d = a^2 - x is a quadratic non-residue modulo p, we have
+            //   a - sqrt(d) == (a + sqrt(d))^p (mod p),
+            // and hence
+            //   x == (a + sqrt(d))(a - sqrt(d)) == (a + sqrt(d))^(p+1) (mod p).
+            // Thus if x is square then (a + sqrt(d))^((p+1)/2) (mod p) is a square root of x.
+            BigInteger q = p.add(BigInteger.ONE).shiftRight(1);
+            BigInteger u = a;
+            BigInteger v = BigInteger.ONE;
+            for (int bit = q.bitLength() - 2; bit >= 0; bit--) {
+                // Square u + v sqrt(d) and reduce mod p.
+                BigInteger tmp = u.multiply(v);
+                u = u.multiply(u).add(v.multiply(v).mod(p).multiply(d)).mod(p);
+                v = tmp.add(tmp).mod(p);
+                if (q.testBit(bit)) {
+                    // Multiply u + v sqrt(d) by a + sqrt(d) and reduce mod p.
+                    tmp = u.multiply(a).add(v.multiply(d)).mod(p);
+                    v = a.multiply(v).add(u).mod(p);
+                    u = tmp;
+                }
+            }
+            squareRoot = u;
+        }
+        // The methods used to compute the square root only guarantees a correct result if the
+        // preconditions (i.e. p prime and x is a square) are satisfied. Otherwise the value is
+        // undefined. Hence it is important to verify that squareRoot is indeed a square root.
+        if (squareRoot != null && squareRoot.multiply(squareRoot).mod(p).compareTo(x) != 0) {
+            throw new GeneralSecurityException("Could not find a modular square root");
+        }
+        return squareRoot;
+    }
+
 }

@@ -1,23 +1,41 @@
-import org.bouncycastle.util.Strings;
+import org.bouncycastle.crypto.engines.SM2Engine;
+import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
+import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
+import org.bouncycastle.jce.ECKeyUtil;
+import org.bouncycastle.util.encoders.Hex;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.HXResponse;
 
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 import java.util.Optional;
 
 public class TestUtil {
 
 
-    public static void main(String[] args) {
-        byte[] b = new byte[]{65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47};
-        StringBuilder builder = new StringBuilder();
-        System.out.println(Strings.fromUTF8ByteArray(b));
-        for (byte b1 : b) {
-            builder.append(String.valueOf(b1));
-        }
-        System.out.println(builder.toString());
+    public static void main(String[] args) throws GeneralSecurityException {
+//        byte[] b = new byte[]{65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 43, 47};
+//        StringBuilder builder = new StringBuilder();
+//        System.out.println(Strings.fromUTF8ByteArray(b));
+//        for (byte b1 : b) {
+//            builder.append(String.valueOf(b1));
+//        }
+//        System.out.println(builder.toString());
+
+//        BigInteger big = new BigInteger("8369634626286123");
+//        BigInteger i = HXUtils.sqrt(big.pow(2));
+//        System.out.println(i);
+
+        byte[] hexkey = Hex.decode("02a247ebd21020089ceff2fc9c8834aa4d39dc4d99ce0c74b29b9b37dcbbbf8c44");
+        byte[] s = HXUtils.decompressPublicKey(hexkey);
+        System.out.println("=====public key");
+        System.out.println(Base64.getMimeEncoder().encodeToString(s));
+        System.out.println("=====public key");
     }
 
     public static void initInjectsByDefault() throws NoSuchProviderException, NoSuchAlgorithmException {

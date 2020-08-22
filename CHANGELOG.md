@@ -1,3 +1,6 @@
+### 2020.8.22
+* HXUtils增加了两个用于转换压缩公钥至公钥的方法.
+
 ### 2020.8.21
 * 更新了decodeAddress方法的逻辑为校验国密主网版本的Address
 * 增加了一个verifyAddress的方法
