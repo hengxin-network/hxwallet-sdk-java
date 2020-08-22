@@ -231,6 +231,11 @@ public class HXWallet {
         return e;
     }
 
+    public String decodeAddressDecompressed(String rawAddress) throws InvalidAddressException, GeneralSecurityException {
+        byte[] compressed = decodeAddress(rawAddress);
+        return HXUtils.decompressPublicKeyBase64(compressed);
+    }
+
     public boolean verifyAddress(String address) {
         try {
             decodeAddress(address);

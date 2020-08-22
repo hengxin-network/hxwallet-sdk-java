@@ -398,7 +398,7 @@ public class HXUtils {
     public static final BigInteger sm2_p = new BigInteger("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16);
     public static BigInteger sm2_a = new BigInteger("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC", 16);
     public static BigInteger sm2_b = new BigInteger("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16);
-    private static String prefix = "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE";
+    private static final String prefix = "MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAE";
 
     public static byte[] decompressPublicKey(byte[] compressed) throws GeneralSecurityException {
         byte[] trimmedX = Arrays.copyOfRange(compressed, 1, 33);
@@ -407,7 +407,7 @@ public class HXUtils {
         BigInteger yPower = xSquare.add(x.multiply(sm2_a)).add(sm2_b);
         BigInteger y = modSqrt(yPower, sm2_p);
 
-        if (compressed[0] != (y.mod(TWO).byteValue()+ 2)) {
+        if (compressed[0] != (y.mod(TWO).byteValue() + 2)) {
             y = sm2_p.subtract(y);
         }
 
@@ -426,7 +426,8 @@ public class HXUtils {
     }
 
     public static String decompressPublicKeyBase64(byte[] compressed) throws GeneralSecurityException {
-        return Base64.getMimeEncoder().encodeToString(decompressPublicKey(compressed));
+        byte[] decompressed = decompressPublicKey(compressed);
+        return Base64.getMimeEncoder().encodeToString(decompressed);
     }
 
     /**

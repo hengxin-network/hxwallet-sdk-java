@@ -1,12 +1,16 @@
 ### 2020.8.22
 * HXUtils增加了两个用于转换压缩公钥至公钥的方法.
+* wallet 增加了一个解析为公钥base64字符串的方法.
+
 
 ### 2020.8.21
 * 更新了decodeAddress方法的逻辑为校验国密主网版本的Address
 * 增加了一个verifyAddress的方法
 
+
 ### 2020.8.17
 * 新增getNewworkSnapshots接口及相关model
+
 
 ### 2020.8.13
 * 算法切换至国密
