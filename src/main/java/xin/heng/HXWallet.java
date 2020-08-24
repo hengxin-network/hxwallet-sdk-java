@@ -179,20 +179,23 @@ public class HXWallet {
     }
 
     public String signBySM2(String rawData) throws SignatureException {
-        byte[] sign = sm2Signer.sign(rawData.getBytes());
+        byte[] sign = signBySM2(rawData.getBytes());
         return Base64.getMimeEncoder().encodeToString(sign);
     }
 
     public byte[] signBySM2(byte[] rawData) throws SignatureException {
-        return sm2Signer.sign(rawData);
+        byte[] sig = sm2Signer.sign(rawData);
+        if (sig.length != 64) sig = HXUtils.sm2RsAsn1ToPlain(sig);
+        return sig;
     }
 
     public boolean verifyBySM2(String rawData, String signature) throws SignatureException {
         byte[] decode = Base64.getMimeDecoder().decode(signature);
-        return sm2Signer.verify(rawData.getBytes(), decode);
+        return verifyBySM2(rawData.getBytes(), decode);
     }
 
     public boolean verifyBySM2(byte[] rawData, byte[] signature) throws SignatureException {
+        if (signature.length == 64) signature = HXUtils.sm2RsPlainToAsn1(signature);
         return sm2Signer.verify(rawData, signature);
     }
 
@@ -240,7 +243,7 @@ public class HXWallet {
         try {
             decodeAddress(address);
         } catch (InvalidAddressException e) {
-            e.printStackTrace();
+            HXUtils.log(e);
             return false;
         }
         return true;

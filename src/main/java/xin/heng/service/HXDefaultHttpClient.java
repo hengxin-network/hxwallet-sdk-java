@@ -3,7 +3,6 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.service.dto.HXResponse;
 import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -59,7 +58,7 @@ public class HXDefaultHttpClient implements IHXHttpClient {
                 return response;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            HXUtils.log(e);
             HXResponse<String> response = new HXResponse<>();
             response.originError = e;
             return response;
@@ -71,7 +70,6 @@ public class HXDefaultHttpClient implements IHXHttpClient {
         try {
             String urlPath = HXUtils.buildUrlPathWithQueries(path, queries);
             URL url = HXUtils.packageRequestUrl(this, urlPath);
-            System.out.println(url.toString());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             if (headers != null) {
                 headers.forEach((k, v) -> {
@@ -113,7 +111,7 @@ public class HXDefaultHttpClient implements IHXHttpClient {
                 return response;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            HXUtils.log(e);
             HXResponse<String> response = new HXResponse<>();
             response.originError = e;
             return response;

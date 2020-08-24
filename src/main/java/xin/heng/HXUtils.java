@@ -20,6 +20,8 @@ import java.security.InvalidKeyException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -118,7 +120,6 @@ public class HXUtils {
 
         //sm2签名
         byte[] sign = wallet.signBySM2(preJwt.getBytes());
-        if (sign.length != 64) sign = sm2RsAsn1ToPlain(sign);
         String signature = Base64.getUrlEncoder().encodeToString(sign);
         //拼接token
         String token = preJwt + "." + signature;
@@ -167,7 +168,6 @@ public class HXUtils {
 
         //sm2签名
         byte[] sign = wallet.signBySM2(preJwt.getBytes());
-        if (sign.length != 64) sign = sm2RsAsn1ToPlain(sign);
         String signature = Base64.getUrlEncoder().encodeToString(sign);
 
         //拼接token
@@ -215,19 +215,9 @@ public class HXUtils {
                 wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(publickey));
             }
             byte[] sig = Base64.getUrlDecoder().decode(signature);
-            if (sig.length == RS_LEN * 2) sig = sm2RsPlainToAsn1(sig);
             verifyResult = wallet.verifyBySM2(preJwt.getBytes(), sig);
-        } catch (SignatureException e) {
-            verifyResult = false;
-        } catch (InvalidAddressException e) {
-            e.printStackTrace();
-            verifyResult = false;
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-            verifyResult = false;
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            verifyResult = false;
+        } catch (SignatureException | InvalidAddressException | InvalidKeySpecException | InvalidKeyException e) {
+            log(e);
         }
 
         if (!verifyResult) {
@@ -522,4 +512,11 @@ public class HXUtils {
         return squareRoot;
     }
 
+    public static boolean LOG_ENABLE = true;
+
+    public static void log(Exception e) {
+        if (LOG_ENABLE) {
+            Logger.getLogger("HX").log(Level.INFO, "HX", e);
+        }
+    }
 }

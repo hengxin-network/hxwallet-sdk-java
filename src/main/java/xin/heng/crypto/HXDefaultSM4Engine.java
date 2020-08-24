@@ -1,5 +1,7 @@
 package xin.heng.crypto;
 
+import xin.heng.HXUtils;
+
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,10 +26,8 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
     public void injectDefault() {
         try {
             keyGenerator = KeyGenerator.getInstance("SM4", "BC");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            HXUtils.log(e);
         }
     }
 
@@ -50,14 +50,8 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
 
             Key decryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKeySpec, ivParameterSpec);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+            HXUtils.log(e);
         }
     }
 

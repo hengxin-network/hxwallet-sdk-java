@@ -69,7 +69,7 @@ public class JWTTokenTest {
             System.out.println("=======Build========");
             HXJwt jwtToken = HXUtils.buildJwt(wallet, buildMaterial);
             System.out.println("build result: " + HXUtils.optToJson(jwtToken));
-            System.out.println("sig length: " + jwtToken.getPayload().getSig().length());
+            System.out.println("sig length: " + jwtToken.getPayload().getSig());
             System.out.println("signature length: " + jwtToken.getSignature().getBytes().length);
             System.out.println("=======Build========");
             System.out.println();
@@ -83,7 +83,7 @@ public class JWTTokenTest {
             System.out.println("=======Verify=======");
             HXJwtVerifyResult jwtResult = HXUtils.verifyJwt(wallet, verifyMaterial);
             System.out.println("verify passed: " + jwtResult.isPassed());
-            System.out.println("verify jwt result: " + HXUtils.optToJson(jwtResult));
+            System.out.println("verify jwt result: " + jwtResult.getJwt().getRaw());
             System.out.println("=======Verify=======");
             System.out.println();
 

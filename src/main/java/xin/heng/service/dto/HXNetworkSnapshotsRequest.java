@@ -2,7 +2,7 @@ package xin.heng.service.dto;
 
 import java.util.List;
 
-public class HXNetworkSnapshotsRequest {
+public class HXNetworkSnapshotsRequest extends HXSnapshotRequest {
     private List<String> userIds;
     private List<String> addresses;
 

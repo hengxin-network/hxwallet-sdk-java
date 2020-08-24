@@ -92,7 +92,8 @@ public class HXService {
                 .setExpiredTime(DEFAULT_EXPIRED_TIME);
 
         String jwtToken = HXUtils.buildJwtString(wallet, jwtBuildMaterial);
-
+        String t = jwtToken.replace("\n", "");
+        System.out.println(t);
         headers.put("Authorization", "Bearer " + jwtToken);
         headers.put("Content-Type", "application/json;charset=utf-8");
 
@@ -260,11 +261,17 @@ public class HXService {
 
     public HXResponse<HXSnapshotsBody> getNetworkSnapshots(String address, HXNetworkSnapshotsRequest request) throws SignatureException {
         HashMap<String,String> queries = new HashMap<>();
-        if (request!=null && request.getUserIds() != null && !request.getUserIds().isEmpty()){
+        queries.put("from", String.valueOf(request.getFrom()));
+        queries.put("limit", String.valueOf(request.getLimit()));
+        queries.put("order", request.getOrder());
+        if (request.getAsset() != null && request.getAsset().length() != 0) {
+            queries.put("asset", request.getAsset());
+        }
+        if (request.getUserIds() != null && !request.getUserIds().isEmpty()){
             String userIdx = String.join(",",request.getUserIds());
             queries.put("user_ids",userIdx);
         }
-        if (request!=null && request.getAddresses() != null && !request.getAddresses().isEmpty()){
+        if (request.getAddresses() != null && !request.getAddresses().isEmpty()){
             String addrs = String.join(",",request.getAddresses());
             queries.put("addresses",addrs);
         }
