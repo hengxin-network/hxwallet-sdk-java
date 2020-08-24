@@ -1,3 +1,8 @@
+### 2020.8.24
+* 全局改用R|S格式作为签名的标准输出
+* HXNetWorkRequest 继承自 HXSnapshotRequest
+
+
 ### 2020.8.22
 * HXUtils增加了两个用于转换压缩公钥至公钥的方法.
 * wallet 增加了一个解析为公钥base64字符串的方法.
