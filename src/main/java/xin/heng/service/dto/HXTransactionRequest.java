@@ -93,7 +93,8 @@ public class HXTransactionRequest {
         return async;
     }
 
-    public void setAsync(boolean async) {
+    public HXTransactionRequest setAsync(boolean async) {
         this.async = async;
+        return this;
     }
 }

@@ -3,7 +3,10 @@ package xin.heng.service;
 import xin.heng.HXUtils;
 import xin.heng.HXWallet;
 import xin.heng.service.dto.*;
-import xin.heng.service.vo.*;
+import xin.heng.service.vo.HXBaseUrl;
+import xin.heng.service.vo.HXFileHolder;
+import xin.heng.service.vo.HXFileInfo;
+import xin.heng.service.vo.HXJwtBuildMaterial;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -117,6 +120,7 @@ public class HXService {
         bodyMap.put("pub_data", requestMap.getPub_data());
         bodyMap.put("senders_required", requestMap.isSenders_required());
         bodyMap.put("receivers_required", requestMap.isReceivers_required());
+        bodyMap.put("async", requestMap.isAsync());
         if (requestMap.getPriv_data() != null) {
             bodyMap.put("priv_data", requestMap.getPriv_data());
         }
@@ -260,28 +264,28 @@ public class HXService {
     }
 
     public HXResponse<HXSnapshotsBody> getNetworkSnapshots(String address, HXNetworkSnapshotsRequest request) throws SignatureException {
-        HashMap<String,String> queries = new HashMap<>();
+        HashMap<String, String> queries = new HashMap<>();
         queries.put("from", String.valueOf(request.getFrom()));
         queries.put("limit", String.valueOf(request.getLimit()));
         queries.put("order", request.getOrder());
         if (request.getAsset() != null && request.getAsset().length() != 0) {
             queries.put("asset", request.getAsset());
         }
-        if (request.getUserIds() != null && !request.getUserIds().isEmpty()){
-            String userIdx = String.join(",",request.getUserIds());
-            queries.put("user_ids",userIdx);
+        if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
+            String userIdx = String.join(",", request.getUserIds());
+            queries.put("user_ids", userIdx);
         }
-        if (request.getAddresses() != null && !request.getAddresses().isEmpty()){
-            String addrs = String.join(",",request.getAddresses());
-            queries.put("addresses",addrs);
+        if (request.getAddresses() != null && !request.getAddresses().isEmpty()) {
+            String addrs = String.join(",", request.getAddresses());
+            queries.put("addresses", addrs);
         }
         HXJwtBuildMaterial jwtBuildMaterial = new HXJwtBuildMaterial()
                 .setAddress(address)
                 .setBody(null)
                 .setExpiredTime(expiredTime)
                 .setRequestMethod(HXConstants.HTTP_METHOD_GET)
-                .setUrl(HXUtils.buildUrlPathWithQueries("/network/snapshots",queries));
-        String jwtToken = HXUtils.buildJwtString(wallet,jwtBuildMaterial);
+                .setUrl(HXUtils.buildUrlPathWithQueries("/network/snapshots", queries));
+        String jwtToken = HXUtils.buildJwtString(wallet, jwtBuildMaterial);
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + jwtToken);
         headers.put("Content-Type", "application/json;charset=utf-8");

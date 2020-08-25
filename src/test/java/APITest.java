@@ -18,11 +18,8 @@ import xin.heng.service.HXService;
 import xin.heng.service.IHXHttpClient;
 import xin.heng.service.dto.*;
 import xin.heng.service.vo.HXBaseUrl;
-import xin.heng.service.vo.HXFileHolder;
-import xin.heng.service.vo.HXFileInfo;
 import xin.heng.service.vo.HXPubData;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
@@ -85,29 +82,30 @@ public class APITest {
         TestUtil.printResult(snapshotsResponse);
 
         // postTransaction 只上传数据，不附带文件
-//        TestCard testCard = new TestCard()
-//                .setName("test-card")
-//                .setNumber(String.valueOf(Random.Default.nextInt()));
+        TestCard testCard = new TestCard()
+                .setName("test-card")
+                .setNumber(String.valueOf(Random.Default.nextInt()));
 //
-//        HXPubData<TestCard> pubData = new HXPubData<TestCard>()
-//                .setT("test-type")
-//                .setD(testCard);
+        HXPubData<TestCard> pubData = new HXPubData<TestCard>()
+                .setT("test-type")
+                .setD(testCard);
 //
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("test", "private_test");
+        Map<String, Object> map = new HashMap<>();
+        map.put("test", "private_test");
 //
-//        HXTransactionRequest requestMap = new HXTransactionRequest()
-//                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
-//                .setPub_data(pubData)
-//                .setPriv_data(map)
-//                .setSenders_required(false)
-//                .setReceivers_required(true)
-//                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
-//                .setTrace_id(UUID.randomUUID().toString());
-//
-//        HXResponse<HXSnapshotBody> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
-//        TestUtil.printResult(HXResponse);
-//
+        HXTransactionRequest requestMap = new HXTransactionRequest()
+                .setAsset("2fc7e3f2a98476d0b8de31b549474c4340cd55b3d040cca8391d710aef893a93")
+                .setPub_data(pubData)
+                .setPriv_data(map)
+                .setSenders_required(false)
+                .setReceivers_required(true)
+                .setAsync(true)
+                .setOpponent_addresses(Collections.singletonList(TestUtil.userAddress))
+                .setTrace_id(UUID.randomUUID().toString());
+        System.out.println("=======Post Transaction===========");
+        HXResponse<HXSnapshotBody> HXResponse = api.postTransactions(TestUtil.userAddress, requestMap, null);
+        TestUtil.printResult(HXResponse);
+
 ////        // postTransaction 给新的Address附加权限
 //        List<HXFileInfo> fileInfos = new ArrayList<>();
 //        if (!snapshotsResponse.responseBody.data.isEmpty() && snapshotsResponse.responseBody.data.get(0).getFiles() != null && !snapshotsResponse.responseBody.data.get(0).getFiles().isEmpty()) {
@@ -173,7 +171,7 @@ public class APITest {
         HXNetworkSnapshotsRequest request = new HXNetworkSnapshotsRequest()
                 .setAddresses(addrs);
         xin.heng.service.dto.HXResponse<HXSnapshotsBody> response = api.getNetworkSnapshots(TestUtil.userAddress, request);
-        System.out.println("GET /network/snapshots" );
+        System.out.println("GET /network/snapshots");
         TestUtil.printResult(response);
     }
 
