@@ -1,5 +1,6 @@
 package xin.heng.service.vo;
 
+import java.security.PrivateKey;
 import java.util.UUID;
 
 public class HXJwtBuildMaterial {
@@ -10,6 +11,10 @@ public class HXJwtBuildMaterial {
     private String url;
     private byte[] body;
     private boolean requestSignature = true;
+
+    // 这两个Key传一个
+    private String encodedKey;
+    private PrivateKey privateKey;
 
     public String getAddress() {
         return address;
@@ -71,6 +76,24 @@ public class HXJwtBuildMaterial {
 
     public HXJwtBuildMaterial setRequestSignature(boolean requestSignature) {
         this.requestSignature = requestSignature;
+        return this;
+    }
+
+    public String getEncodedKey() {
+        return encodedKey;
+    }
+
+    public HXJwtBuildMaterial setEncodedKey(String encodedKey) {
+        this.encodedKey = encodedKey;
+        return this;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public HXJwtBuildMaterial setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
         return this;
     }
 }

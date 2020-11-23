@@ -94,8 +94,8 @@ public class HXUtils {
     }
 
     public static String buildJwtString(HXWallet wallet, HXJwtBuildMaterial jwtMaterial) throws SignatureException {
-        String payloadJson = "{\"exp\":" + (new Date().getTime() / 1000L + jwtMaterial.getExpiredTime()) +
-                ",\"iat\":" + new Date().getTime() / 1000 +
+        String payloadJson = "{\"exp\":" + (new Date().getTime() / 1000L + jwtMaterial.getExpiredTime() - 5) +
+                ",\"iat\":" + (new Date().getTime() / 1000 - 5) +
                 ",\"iss\":\"" + jwtMaterial.getAddress() + "\"" +
                 ",\"jti\":\"" + UUID.randomUUID() + "\"";
         if (jwtMaterial.isRequestSignature()) {
@@ -118,8 +118,15 @@ public class HXUtils {
         String payloadStr = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(UTF_8));
         String preJwt = (headerStr + "." + payloadStr).replace("=", "");
 
+        byte[] sign;
         //sm2签名
-        byte[] sign = wallet.signBySM2(preJwt.getBytes());
+        if (jwtMaterial.getPrivateKey() != null) {
+            sign = wallet.signBySM2(jwtMaterial.getPrivateKey(),preJwt.getBytes());
+        } else if (jwtMaterial.getEncodedKey() != null) {
+            sign = wallet.signBySM2(jwtMaterial.getEncodedKey(),preJwt.getBytes());
+        } else {
+            sign = wallet.signBySM2(preJwt.getBytes());
+        }
         String signature = Base64.getUrlEncoder().encodeToString(sign);
         //拼接token
         String token = preJwt + "." + signature;
@@ -132,9 +139,9 @@ public class HXUtils {
         HXJwtHeader jwtHeader = new HXJwtHeader();
         HXJwtPayload jwtPayload = new HXJwtPayload();
 
-        long exp = new Date().getTime() / 1000L + jwtMaterial.getExpiredTime();
+        long exp = new Date().getTime() / 1000L + jwtMaterial.getExpiredTime() - 5;
         jwtPayload.setExp(exp);
-        long iat = new Date().getTime() / 1000L;
+        long iat = new Date().getTime() / 1000L - 5;
         jwtPayload.setIat(iat);
         jwtPayload.setIss(jwtMaterial.getAddress());
         String uuid = UUID.randomUUID().toString();
@@ -166,8 +173,15 @@ public class HXUtils {
         String payloadStr = Base64.getUrlEncoder().encodeToString(payloadJson.getBytes(UTF_8));
         String preJwt = (headerStr + "." + payloadStr).replace("=", "");
 
+        byte[] sign;
         //sm2签名
-        byte[] sign = wallet.signBySM2(preJwt.getBytes());
+        if (jwtMaterial.getPrivateKey() != null) {
+            sign = wallet.signBySM2(jwtMaterial.getPrivateKey(),preJwt.getBytes());
+        } else if (jwtMaterial.getEncodedKey() != null) {
+            sign = wallet.signBySM2(jwtMaterial.getEncodedKey(),preJwt.getBytes());
+        } else {
+            sign = wallet.signBySM2(preJwt.getBytes());
+        }
         String signature = Base64.getUrlEncoder().encodeToString(sign);
 
         //拼接token
@@ -212,11 +226,14 @@ public class HXUtils {
         try {
             if (material.isUseIssuerToVerify()) {
                 byte[] publickey = wallet.decodeAddress(payload.getIss());
-                wallet.setSM2SignerPublicKey(Base64.getMimeEncoder().encodeToString(publickey));
+                byte[] sig = Base64.getUrlDecoder().decode(signature);
+                String key = Base64.getMimeEncoder().encodeToString(publickey);
+                verifyResult = wallet.verifyBySM2(key, preJwt.getBytes(), sig);
+            } else {
+                byte[] sig = Base64.getUrlDecoder().decode(signature);
+                verifyResult = wallet.verifyBySM2(preJwt.getBytes(), sig);
             }
-            byte[] sig = Base64.getUrlDecoder().decode(signature);
-            verifyResult = wallet.verifyBySM2(preJwt.getBytes(), sig);
-        } catch (SignatureException | InvalidAddressException | InvalidKeySpecException | InvalidKeyException e) {
+        } catch (SignatureException | InvalidAddressException e) {
             log(e);
         }
 

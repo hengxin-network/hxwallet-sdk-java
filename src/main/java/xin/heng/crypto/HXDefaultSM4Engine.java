@@ -1,6 +1,7 @@
 package xin.heng.crypto;
 
 import xin.heng.HXUtils;
+import xin.heng.HXWallet;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -63,5 +64,43 @@ public class HXDefaultSM4Engine implements IHXSM4Engine {
     @Override
     public byte[] decrypt(byte[] encryptData) throws BadPaddingException, IllegalBlockSizeException {
         return decryptCipher.doFinal(encryptData);
+    }
+
+    @Override
+    public byte[] encrypt(byte[] key, byte[] iv, byte[] rawData) {
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM_NAME_CBC_PADDING, "BC");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+            Key encryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
+            cipher.init(Cipher.ENCRYPT_MODE, encryptKeySpec, ivParameterSpec);
+            return cipher.doFinal(rawData);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            HXUtils.log(e);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] encrypt(byte[] key, byte[] rawData) {
+        return encrypt(key, HXWallet.IV, rawData);
+    }
+
+    @Override
+    public byte[] decrypt(byte[] key, byte[] iv, byte[] encryptData) {
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM_NAME_CBC_PADDING, "BC");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+            Key decryptKeySpec = new SecretKeySpec(key, ALGORITHM_NAME);
+            cipher.init(Cipher.DECRYPT_MODE, decryptKeySpec, ivParameterSpec);
+            return cipher.doFinal(encryptData);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            HXUtils.log(e);
+        }
+        return null;
+    }
+
+    @Override
+    public byte[] decrypt(byte[] key, byte[] encryptData) {
+        return decrypt(key, HXWallet.IV, encryptData);
     }
 }

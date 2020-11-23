@@ -9,7 +9,7 @@ import java.security.spec.InvalidKeySpecException;
 public interface IHXSM2Signer {
     byte[] sign(byte[] rawData) throws SignatureException;
 
-    boolean verify(byte[]rawData,byte[] signature) throws SignatureException;
+    boolean verify(byte[] rawData, byte[] signature) throws SignatureException;
 
     void injectKeyFactory(IHXKeyFactory keyFactory);
 
@@ -20,4 +20,13 @@ public interface IHXSM2Signer {
     void setPublicKey(PublicKey key) throws InvalidKeyException;
 
     void setPublicKey(String encodedKey) throws InvalidKeySpecException, InvalidKeyException;
+
+    byte[] sign(PrivateKey key, byte[] rawData);
+
+    byte[] sign(String encodedKey, byte[] rawData);
+
+    boolean verify(PublicKey key, byte[] rawData, byte[] signature);
+
+    boolean verify(String encodedKey, byte[] rawData, byte[] signature);
+
 }

@@ -21,7 +21,7 @@ public class HXWallet {
         return INSTANCE.hxWallet;
     }
 
-    private static byte[] IV = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    public static final byte[] IV = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     private IHXSM2Signer sm2Signer;
     private IHXSM2Engine sm2Engine;
     private IHXSM3Digest sm3;
@@ -189,6 +189,28 @@ public class HXWallet {
         return sig;
     }
 
+    public String signBySM2(PrivateKey key, String rawData) {
+        byte[] sign = signBySM2(key, rawData.getBytes());
+        return Base64.getMimeEncoder().encodeToString(sign);
+    }
+
+    public String signBySM2(String encodedKey, String rawData) {
+        byte[] sign = signBySM2(encodedKey, rawData.getBytes());
+        return Base64.getMimeEncoder().encodeToString(sign);
+    }
+
+    public byte[] signBySM2(PrivateKey key, byte[] rawData) {
+        byte[] sig = sm2Signer.sign(key, rawData);
+        if (sig.length != 64) sig = HXUtils.sm2RsAsn1ToPlain(sig);
+        return sig;
+    }
+
+    public byte[] signBySM2(String encodedKey, byte[] rawData) {
+        byte[] sig = sm2Signer.sign(encodedKey, rawData);
+        if (sig.length != 64) sig = HXUtils.sm2RsAsn1ToPlain(sig);
+        return sig;
+    }
+
     public boolean verifyBySM2(String rawData, String signature) throws SignatureException {
         byte[] decode = Base64.getMimeDecoder().decode(signature);
         return verifyBySM2(rawData.getBytes(), decode);
@@ -197,6 +219,26 @@ public class HXWallet {
     public boolean verifyBySM2(byte[] rawData, byte[] signature) throws SignatureException {
         if (signature.length == 64) signature = HXUtils.sm2RsPlainToAsn1(signature);
         return sm2Signer.verify(rawData, signature);
+    }
+
+    public boolean verifyBySM2(PublicKey key, byte[] rawData, byte[] signature) {
+        if (signature.length == 64) signature = HXUtils.sm2RsPlainToAsn1(signature);
+        return sm2Signer.verify(key, rawData, signature);
+    }
+
+    public boolean verifyBySM2(String encodedKey, byte[] rawData, byte[] signature) {
+        if (signature.length == 64) signature = HXUtils.sm2RsPlainToAsn1(signature);
+        return sm2Signer.verify(encodedKey, rawData, signature);
+    }
+
+    public boolean verifyBySM2(PublicKey key, String rawData, String signature) {
+        byte[] decodeSig = Base64.getMimeDecoder().decode(signature);
+        return verifyBySM2(key, rawData.getBytes(), decodeSig);
+    }
+
+    public boolean verifyBySM2(String key, String rawData, String signature) {
+        byte[] decodeSig = Base64.getMimeDecoder().decode(signature);
+        return verifyBySM2(key, rawData.getBytes(), decodeSig);
     }
 
     public String digestBySM3(String message) {

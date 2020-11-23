@@ -5,7 +5,7 @@ public class HXJwtVerifyMaterial {
     private String requestMethod;
     private String url;
     private byte[] body;
-    private boolean useIssuerToVerify;
+    private boolean useIssuerToVerify = true;
     private boolean verifySig = true;
 
     public String getRawJwtString() {
